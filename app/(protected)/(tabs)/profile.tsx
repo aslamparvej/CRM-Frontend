@@ -8,8 +8,29 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
-  Switch
+  Switch,
 } from "react-native";
+
+import {
+  User,
+  Mail,
+  Shield,
+  Calendar,
+  Key,
+  Users,
+  User2,
+  ChartBar,
+  Settings,
+  Lock,
+  Phone,
+  Bell,
+  Globe,
+  Sun,
+  HelpCircle,
+  File,
+  AlertCircle,
+  LogOutIcon
+} from "lucide-react-native";
 
 import { useAuthStore } from "@/store/auth.store";
 
@@ -69,7 +90,7 @@ const Row = ({
   right,
   iconVariant,
 }: {
-  emoji: string;
+  emoji: React.ReactNode;
   label: string;
   value?: string;
   onPress?: () => void;
@@ -200,16 +221,24 @@ export default function Profile({ navigation }: { navigation?: any }) {
         {/* ── Account ── */}
         <SectionLabel title="Account" />
         <Card>
-          <Row emoji="👤" label="Full name" value={user?.name} />
-          <Row emoji="📧" label="Email" value="aslamparvej2@…" />
-          <Row emoji="🛡️" label="Role" value={user?.role} />
           <Row
-            emoji="📅"
+            emoji={<User size={18} />}
+            label="Full name"
+            value={user?.name}
+          />
+          <Row
+            emoji={<Mail size={18} />}
+            label="Email"
+            value="aslamparvej2@…"
+          />
+          <Row emoji={<Shield size={18} />} label="Role" value={user?.role} />
+          <Row
+            emoji={<Calendar size={18} />}
             label="Member since"
             value={fmtDate(user?.createdAt)}
           />
           <Row
-            emoji="🔑"
+            emoji={<Key size={18} />}
             label="User ID"
             right={
               <View className="bg-zinc-100 rounded-md px-2 py-0.5">
@@ -225,25 +254,25 @@ export default function Profile({ navigation }: { navigation?: any }) {
         <SectionLabel title="Admin tools" />
         <Card>
           <Row
-            emoji="👥"
+            emoji={<Users size={18} />}
             label="Manage sub-admins"
             iconVariant="blue"
             onPress={() => navigation?.navigate("SubAdmins")}
           />
           <Row
-            emoji="🧑‍💼"
+            emoji={<User2 size={18} />}
             label="Manage agents"
             iconVariant="blue"
             onPress={() => navigation?.navigate("Agents")}
           />
           <Row
-            emoji="📊"
+            emoji={<ChartBar size={18} />}
             label="View reports"
             iconVariant="green"
             onPress={() => navigation?.navigate("Reports")}
           />
           <Row
-            emoji="⚙️"
+            emoji={<Settings size={18} />}
             label="System settings"
             onPress={() => navigation?.navigate("Settings")}
           />
@@ -253,12 +282,12 @@ export default function Profile({ navigation }: { navigation?: any }) {
         <SectionLabel title="Security" />
         <Card>
           <Row
-            emoji="🔒"
+            emoji={<Lock size={18} />}
             label="Change password"
             onPress={() => navigation?.navigate("ChangePassword")}
           />
           <Row
-            emoji="📱"
+            emoji={<Phone size={18} />}
             label="Two-factor auth"
             value="On"
             iconVariant="green"
@@ -270,7 +299,7 @@ export default function Profile({ navigation }: { navigation?: any }) {
         <SectionLabel title="Preferences" />
         <Card>
           <Row
-            emoji="🔔"
+            emoji={<Bell size={18} />}
             label="Push notifications"
             right={
               <Switch
@@ -281,22 +310,40 @@ export default function Profile({ navigation }: { navigation?: any }) {
               />
             }
           />
-          <Row emoji="🌐" label="Language"   value="English" onPress={() => Alert.alert("Language")} />
-          <Row emoji="☀️" label="Appearance" value="Light"   onPress={() => Alert.alert("Appearance")} />
+          <Row
+            emoji={<Globe size={18} />}
+            label="Language"
+            value="English"
+            onPress={() => Alert.alert("Language")}
+          />
+          <Row
+            emoji={<Sun size={18}/>}
+            label="Appearance"
+            value="Light"
+            onPress={() => Alert.alert("Appearance")}
+          />
         </Card>
 
-         {/* ── Support ── */}
+        {/* ── Support ── */}
         <SectionLabel title="Support" />
         <Card>
-          <Row emoji="❓" label="Help & FAQ"      onPress={() => Alert.alert("Help")} />
-          <Row emoji="📄" label="Terms & Privacy" onPress={() => Alert.alert("Terms")} />
-          <Row emoji="ℹ️" label="App version"     value="v1.0.0" />
+          <Row
+            emoji={<HelpCircle size={18} />}
+            label="Help & FAQ"
+            onPress={() => Alert.alert("Help")}
+          />
+          <Row
+            emoji={<File  size={18}/>}
+            label="Terms & Privacy"
+            onPress={() => Alert.alert("Terms")}
+          />
+          <Row emoji={<AlertCircle size={18} />} label="App version" value="v1.0.0" />
         </Card>
 
         {/* ── Logout ── */}
         <View className="mx-4 mt-4 rounded-[14px] overflow-hidden border border-red-100">
           <Row
-            emoji="🚪"
+            emoji={<LogOutIcon size={18} />}
             label="Log out"
             danger
             iconVariant="red"

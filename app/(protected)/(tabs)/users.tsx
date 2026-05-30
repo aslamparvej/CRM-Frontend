@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { Plus, Search, Filter } from "lucide-react-native";
 import {
@@ -10,79 +11,57 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import AppHeader from "@/components/ui/Header";
+import { useDebounce } from "@/hooks/useDebounce";
+import { getUsers } from "@/services/api/user.api";
+import { useUserStore } from "@/store/users.store";
 
-const USERS = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "Admin",
-    phone: "+91 9876543210",
-  },
-  {
-    id: "2",
-    name: "Sarah Khan",
-    email: "sarah@example.com",
-    role: "Sub-admin",
-    phone: "+91 9876543211",
-  },
-  {
-    id: "3",
-    name: "Michael Roy",
-    email: "michael@example.com",
-    role: "Agent",
-    phone: "+91 9876543212",
-  },
-];
+
+import AppHeader from "@/components/ui/Header";
+import  Loader  from "@/components/ui/Loader";
+import UserCard from "@/components/users/UserCard";
+import EmptyState from "@/components/ui/EmptyState";
 
 export default function UsersPage() {
   const router = useRouter();
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("");
+  const { users, isLoading, setUsers, setLoading } = useUserStore();
+  const debounced = useDebounce(search, 400);
 
-  const renderUserCard = ({ item }: any) => {
-    return (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => router.push(`/(protected)/users/details/${item.id}`)}
-        className="mb-4 rounded-2xl bg-white p-4 shadow-sm"
-      >
-        <View className="flex-row items-center justify-between">
-          <View className="flex-1">
-            <Text className="text-lg font-bold text-gray-900">{item.name}</Text>
+  useEffect(() => {
+    loadUsers();
+  }, [debounced, roleFilter]);
 
-            <Text className="mt-1 text-sm text-gray-500">{item.email}</Text>
+  const loadUsers = async () => {
+    setLoading(true);
 
-            <Text className="mt-1 text-sm text-gray-500">{item.phone}</Text>
-          </View>
-
-          <View className="rounded-full bg-blue-100 px-3 py-1">
-            <Text className="text-xs font-semibold text-blue-700">
-              {item.role}
-            </Text>
-          </View>
-        </View>
-
-        <View className="mt-4 flex-row items-center justify-end">
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => router.push(`/(protected)/users/edit/${item.id}`)}
-            className="rounded-xl bg-gray-100 px-4 py-2"
-          >
-            <Text className="font-medium text-gray-700">Edit</Text>
-          </TouchableOpacity>
-        </View>
-      </TouchableOpacity>
-    );
+    try {
+      const response = await getUsers({
+        search: debounced || undefined,
+        role: roleFilter || undefined,
+      });
+      setUsers(response.data.data);
+    } catch (error) {
+      console.log("Error fetching users", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const roleFilters = [
+    { value: "", label: "All" },
+    { value: "sub_admin", label: "Sub Admin" },
+    { value: "agent", label: "Agent" },
+  ];
 
   const renderRightElement = () => {
     return (
       <TouchableOpacity
         activeOpacity={0.8}
         onPress={() => router.push("/(protected)/users/create")}
-        className="p-2 items-center justify-center rounded-xl bg-blue-600"
+        className="p-2 items-center justify-center rounded-xl bg-primary-color"
       >
-        <Plus color="#FFFFFF" size={20} />
+        <Plus color="#000" size={20} />
       </TouchableOpacity>
     );
   };
@@ -90,50 +69,64 @@ export default function UsersPage() {
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-      <AppHeader title="Users" subtitle="Manage admins, sub-admins & agents" showBack showSearch rightElement={renderRightElement()} />
-
-      {/* SEARCH & FILTER */}
-      {/* <View className="mt-5 flex-row items-center px-5">
-        <View className="mr-3 flex-1 flex-row items-center rounded-2xl bg-white px-4">
-          <Search color="#9CA3AF" size={20} />
-
-          <TextInput
-            placeholder="Search users..."
-            placeholderTextColor="#9CA3AF"
-            className="ml-3 flex-1 py-4 text-base text-gray-900"
-          />
+      <AppHeader
+        title="Users"
+        subtitle="Manage sub-admins & agents"
+        showBack
+        showSearch
+        rightElement={renderRightElement()}
+      />
+      <View className="px-4 pt-3">
+        <View className="flex-row gap-2">
+          {roleFilters.map((r) => (
+            <TouchableOpacity
+              key={r.value}
+              onPress={() => setRoleFilter(r.value)}
+              className={`px-3 py-1.5 rounded-full border ${roleFilter === r.value ? "border-primary-color bg-primary-color" : "border-gray-700 bg-transparent"}`}
+              activeOpacity={0.8}
+            >
+              <Text
+                className={`text-xs font-semibold ${roleFilter === r.value ? "text-gray-800" : "text-gray-600"}`}
+              >
+                {r.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
+      </View>
 
-        <TouchableOpacity
-          activeOpacity={0.8}
-          className="h-14 w-14 items-center justify-center rounded-2xl bg-white"
-        >
-          <Filter color="#374151" size={22} />
-        </TouchableOpacity>
-      </View> */}
-
-      {/* USER LIST */}
-      {/* <FlatList
-        data={USERS}
-        keyExtractor={(item) => item.id}
-        renderItem={renderUserCard}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          padding: 20,
-          paddingBottom: 100,
-        }}
-        ListEmptyComponent={
-          <View className="mt-20 items-center">
-            <Text className="text-lg font-semibold text-gray-700">
-              No Users Found
-            </Text>
-
-            <Text className="mt-2 text-center text-gray-500">
-              Create users to manage your CRM system
-            </Text>
-          </View>
-        }
-      /> */}
+      {isLoading ? (
+        <View className="flex-1 flex items-center justify-center">
+          <Loader size="large" />
+        </View>
+      ) : (
+        <FlatList
+          data={users}
+          keyExtractor={(i) => i._id}
+          renderItem={({ item }) => (
+            <UserCard
+              user={item}
+              onPress={() =>
+                router.push(`/(protected)/users/details/${item._id}`)
+              }
+              onDelete={()=> console.log("Working on it...")}
+            />
+          )}
+          contentContainerStyle={{ padding: 16 }}
+          showsVerticalScrollIndicator={false}
+          onRefresh={loadUsers}
+          refreshing={isLoading}
+          ListEmptyComponent={
+            <EmptyState
+              title="No users found"
+              action={{
+                label: "Add User",
+                onPress: () => router.push("/(protected)/users/create"),
+              }}
+            />
+          }
+        />
+      )}
     </SafeAreaView>
   );
 }
