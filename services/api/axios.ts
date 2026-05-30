@@ -9,8 +9,6 @@ const API = axios.create({
   },
 });
 
-console.log("Base URL", process.env.EXPO_PUBLIC_API_URL);
-
 // Request Interceptor
 API.interceptors.request.use(
   async (config) => {

@@ -13,9 +13,13 @@ export interface RegisterPayload {
 }
 
 export const loginUser = async (data: LoginPayload) => {
-  const response = await API.post("/auth/login", data);
+  try {
+    const response = await API.post("/auth/login", data);
 
-  return response.data;
+    return response.data;
+  } catch (error: any) {
+    console.log("Error sending requiest to the server!", error.message);
+  }
 };
 
 export const registerUser = async (data: RegisterPayload) => {
