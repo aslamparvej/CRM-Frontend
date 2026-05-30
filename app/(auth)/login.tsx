@@ -11,16 +11,19 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<Boolean>(false);
 
-  const {login} = useAuthStore();
+  const { login, isLoading, error } = useAuthStore();
 
   const handleLogin = async () => {
     try {
       await login(email, password);
+      // if (accessToken) {
+      //   router.replace("/dashboard");
+      // }
       router.replace("/dashboard");
     } catch (error) {
-      console.log("Error in login handler", error);
+      console.log("Error in login handler", error); 
     }
-  }
+  };
 
   return (
     <SafeAreaView className="flex-1">
@@ -37,6 +40,12 @@ const Login = () => {
           <Text className="text-3xl font-bold text-gray-800">Login</Text>
           <Text className="text-lg text-gray-500">Manage your team.</Text>
         </View>
+
+        {error && (
+          <View className="mb-4">
+            <Text className="text-red-500">{error}</Text>
+          </View>
+        )}
 
         {/* Input fields  */}
         <View className="mb-4">
@@ -73,9 +82,13 @@ const Login = () => {
 
         <TouchableOpacity
           onPress={handleLogin}
-          className="py-4 px-3 mb-4 rounded-lg items-center bg-primary-color hover:text-primary-color"
+          disabled={isLoading}
+          className="py-4 px-3 mb-4 rounded-lg items-center bg-primary-color hover:text-primary-color disabled:opacity-50"
+          activeOpacity={0.7}
         >
-          <Text className="text-lg text-white font-medium">Sign In</Text>
+          <Text className="text-lg text-white font-medium">
+            {isLoading ? "Logging in..." : "Login"}
+          </Text>
         </TouchableOpacity>
 
         <View className="flex-row justify-center">
