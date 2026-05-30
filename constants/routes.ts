@@ -1,0 +1,16 @@
+export const ROUTES = {
+  LOGIN: '/(auth)/login',
+  REGISTER: '/(auth)/register',
+  FORGOT_PASSWORD: '/(auth)/forgot-password',
+  VERIFY_OTP: '/(auth)/verify-otp',
+  DASHBOARD: '/(protected)/(tabs)/dashboard',
+  LEADS: '/(protected)/(tabs)/leads',
+  FOLLOWUPS: '/(protected)/(tabs)/followups',
+  USERS: '/(protected)/(tabs)/users',
+  PROFILE: '/(protected)/(tabs)/profile',
+  LEAD_CREATE: '/(protected)/leads/create',
+  LEAD_EDIT: '/(protected)/leads/edit',
+  LEAD_DETAILS: '/(protected)/leads/details',
+  NOTIFICATIONS: '/(protected)/notifications',
+  SETTINGS: '/(protected)/settings',
+};
