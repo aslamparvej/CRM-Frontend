@@ -17,6 +17,7 @@ interface AuthState {
   user: User | null;
   accessToken: string | null;
   isLoading: boolean;
+  error: string | null;
 
   setAuth: (user: User, token: string) => void;
   login: (email: string, password: string) => void;
@@ -28,6 +29,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   accessToken: null,
   isLoading: true,
+  error: null,
 
   setAuth: (user, accessToken) =>
     set({
@@ -41,7 +43,6 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await loginUser({ email, password });
 
       const { accessToken, user } = response.data;
-      console.log("Users data", user);
       await saveToken(accessToken);
 
       set({
@@ -49,9 +50,11 @@ export const useAuthStore = create<AuthState>((set) => ({
         accessToken,
         isLoading: false,
       });
-    } catch (error) {
+    } catch (error: any) {
+      set({ isLoading: false, error: error.message });
+      console.log("Error to login", error.message);
+    } finally {
       set({ isLoading: false });
-      console.log("Error to login", error);
     }
   },
 
@@ -61,9 +64,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({
         user: null,
         accessToken: null,
+        error: null,
       });
-    } catch (error) {
-      console.log("Error to logout", error);
+    } catch (error: any) {
+      console.log("Error to logout", error.message);
     }
   },
 
