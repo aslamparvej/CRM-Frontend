@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { ScrollView, Text, View, TouchableOpacity } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import { User, Mail, Phone, Lock } from "lucide-react-native";
+import { ScrollView, Text, View, TouchableOpacity } from "react-native";
 
 import Input from "../ui/Input";
 import Button from "../ui/Button";
@@ -21,8 +22,11 @@ const UserForm: React.FC<UserFormProps> = ({
     email: initialData?.email || "",
     phone: initialData?.phone || "",
     role: initialData?.role || "agent",
+    agentType: initialData?.agentType || "",
     password: "",
   });
+
+
   const update = (key: string, val: string) =>
     setForm((f) => ({ ...f, [key]: val }));
   const roles = [
@@ -62,18 +66,30 @@ const UserForm: React.FC<UserFormProps> = ({
 
       {/* Roles  */}
       <Text className="text-slate-400 text-sm font-medium mb-2">Role</Text>
-      <View className="flex-row gap-3 mb-4">
-        {roles.map((r) => (
-          <TouchableOpacity
-            key={r.value}
-            onPress={() => update("role", r.value)}
-            className={`flex-1 py-3 rounded-xl border items-center ${form.role === r.value ? "border-indigo-500 bg-indigo-500/15" : "border-slate-700 bg-slate-800"}`}
-            activeOpacity={0.8}
-          >
-            <Text className={`font-semibold text-sm`}>{r.label}</Text>
-          </TouchableOpacity>
-        ))}
+      <View className="border rounded-lg mb-4 border-gray-300 justify-center">
+        <Picker
+          selectedValue={form.role}
+          onValueChange={(itemValue) => update("role", itemValue)}
+          style={{
+            height: 60,
+            marginVertical: -8,
+          }}
+        >
+          {roles.map((r) => (
+            <Picker.Item key={r.value} label={r.label} value={r.value} />
+          ))}
+        </Picker>
       </View>
+
+      {/* If role is agent then show agent type   */}
+      {form.role === "agent" && (
+        <Input
+          label="Agent Type *"
+          value={form.agentType}
+          onChangeText={(v) => update("agentType", v)}
+          placeholder="Enter agent type"
+        />
+      )}
 
       {/* Check Add or Edit User */}
       {!initialData?.id && (
