@@ -47,7 +47,7 @@ const Button: React.FC<ButtonProps> = ({
   const textColor =
     variant === "outline" || variant === "ghost"
       ? "text-indigo-400"
-      : "text-white";
+      : "text-gray-600";
 
   return (
     <TouchableOpacity
