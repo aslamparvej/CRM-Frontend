@@ -1,6 +1,12 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { AlertCircle, Eye, EyeOff } from "lucide-react-native";
-import { View, Text, TextInput, TextInputProps, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TextInputProps,
+  TouchableOpacity,
+} from "react-native";
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -22,7 +28,6 @@ const Input: React.FC<InputProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = secureTextEntry;
 
-
   return (
     <View className={`mb-4  ${containerClassName || ""}`}>
       {label && (
@@ -36,7 +41,10 @@ const Input: React.FC<InputProps> = ({
       >
         {leftIcon && <View className="mr-2">{leftIcon}</View>}
         <TextInput
-          className="flex-1 text-gray-800 py-3 text-base"
+          className={`flex-1 text-gray-800 text-base ${
+            props.multiline ? "min-h-[80px]" : "py-3"
+          }`}
+          textAlignVertical={props.multiline ? "top" : "center"}
           placeholderTextColor="#64748B"
           secureTextEntry={isPassword && !showPassword}
           {...props}
@@ -52,7 +60,6 @@ const Input: React.FC<InputProps> = ({
         ) : (
           rightIcon && <View className="ml-2">{rightIcon}</View>
         )}
-        
       </View>
 
       {error && (
