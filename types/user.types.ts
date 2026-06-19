@@ -30,3 +30,17 @@ export interface RegisterPayload {
   role: string;
   agentType?: string;
 }
+
+export const ALL_KEYS = [
+  "CREATE_LEAD",
+  "EDIT_LEAD",
+  "DELETE_LEAD",
+  "VIEW_ALL_LEADS",
+  "MANAGE_USERS",
+  "SEND_MESSAGES",
+  "VIEW_REPORTS",
+  "MANAGE_SETTINGS",
+] as const;
+
+export type PermKey = typeof ALL_KEYS[number];
+

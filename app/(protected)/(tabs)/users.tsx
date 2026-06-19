@@ -72,7 +72,6 @@ export default function UsersPage() {
       <AppHeader
         title="Users"
         subtitle="Manage sub-admins & agents"
-        showBack
         showSearch
         rightElement={renderRightElement()}
       />

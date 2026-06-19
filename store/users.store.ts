@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { User } from '../types/user.types';
+import { User, PermKey } from '../types/user.types';
 
 
 interface UserState {
@@ -7,6 +7,7 @@ interface UserState {
   selectedUser: User | null;
   isLoading: boolean;
   error: string | null;
+  permissions: PermKey[];
   setUsers: (users: User[]) => void;
   setSelectedUser: (user: User | null) => void;
   setLoading: (loading: boolean) => void;
@@ -21,12 +22,13 @@ export const useUserStore = create<UserState>((set) => ({
   selectedUser: null,
   isLoading: false,
   error: null,
+  permissions: [],
   setUsers: (users) => set({ users }),
   setSelectedUser: (selectedUser) => set({ selectedUser }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
   addUser: (user) => set((s) => ({ users: [user, ...s.users] })),
   updateUser: (id, data) =>
-    set((s) => ({ users: s.users.map((u) => (u.id === id ? { ...u, ...data } : u)) })),
-  removeUser: (id) => set((s) => ({ users: s.users.filter((u) => u.id !== id) })),
+    set((s) => ({ users: s.users.map((u) => (u._id === id ? { ...u, ...data } : u)) })),
+  removeUser: (id) => set((s) => ({ users: s.users.filter((u) => u._id !== id) })),
 }));

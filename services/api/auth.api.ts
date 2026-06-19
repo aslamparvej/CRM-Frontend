@@ -43,3 +43,18 @@ export const logoutUser = async () => {
 
   return response.data;
 };
+
+export const forgotPassword = async (email: string) => {
+  const response = await API.post("/auth/forgot-password", { email });
+  return response.data;
+};
+
+export const verifyOtp = async (email: string, otp: string) => {
+  const response = await API.post("/auth/verify-otp", { email, otp });
+  return response.data;
+}
+
+export const resetPassword = async (data: any)=> {
+  const response = await API.post("/auth/reset-password", data);
+  return response.data;
+}

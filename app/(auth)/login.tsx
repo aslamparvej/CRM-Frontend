@@ -91,7 +91,7 @@ const Login = () => {
           </Text>
         </TouchableOpacity>
 
-        <View className="flex-row justify-center">
+        <View className="flex-row justify-center hidden">
           <Text className="text-gray-500">Don&apos;t have an account? </Text>
           <Link href="/register">
             <Text className="text-primary-color font-semibold">Sign Up</Text>

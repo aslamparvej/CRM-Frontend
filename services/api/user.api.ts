@@ -3,7 +3,6 @@ import { RegisterPayload } from "@/types/user.types";
 
 export const createUser = async (data: RegisterPayload) => {
   try {
-    console.log("Creating user sending data", data);
     const response = await API.post("/users", data);
     return response;
   } catch (error) {
@@ -24,7 +23,6 @@ export const getUsers = async (params?: {
 export const getUser = async (id: string) => {
   try {
     const response = await API.get(`/users/${id}`);
-    console.log(response.data);
 
     return response.data;
   } catch (error) {
@@ -32,16 +30,47 @@ export const getUser = async (id: string) => {
   }
 };
 
-// getUsers: (params?: { role?: string; page?: number; search?: string }) =>
-//     api.get<ApiResponse<PaginatedResponse<UserProfile>>>('/users', { params }),
-//   getUser: (id: string) => api.get<ApiResponse<UserProfile>>(`/users/${id}`),
-//   createUser: (payload: CreateUserPayload) =>
-//     api.post<ApiResponse<UserProfile>>('/users', payload),
-//   updateUser: (id: string, payload: Partial<CreateUserPayload>) =>
-//     api.put<ApiResponse<UserProfile>>(`/users/${id}`, payload),
-//   deleteUser: (id: string) => api.delete(`/users/${id}`),
-//   toggleActive: (id: string) =>
-//     api.patch<ApiResponse<UserProfile>>(`/users/${id}/toggle-active`),
-//   updatePermissions: (id: string, permissions: string[]) =>
-//     api.put(`/users/${id}/permissions`, { permissions }),
-//   getRoles: () => api.get<ApiResponse<{ roles: string[] }>>('/users/roles'),
+export const updateUser = async (id: string, payload: RegisterPayload) => {
+  try {
+    const response = await API.put(`/users/${id}`, payload);
+    return response.data;
+  } catch (error) {
+    console.log("Error when calling update user api", error);
+  }
+};
+
+export const deleteUser = async (id: string) => {
+  try {
+    const response = await API.delete(`/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.log("Error when calling delete user api", error);
+  }
+};
+
+export const toggleActive = async (id: string) => {
+  try {
+    const response = await API.patch(`/users/${id}/status`);
+    return response.data;
+  } catch (error) {
+    console.log("Error when calling toggle active user api", error);
+  }
+};
+
+export const updatePermissions = async (id: string, permissions: string[]) => {
+  try {
+    const response = await API.put(`/users/${id}/permissions`, { permissions });
+    return response.data;
+  } catch (error) {
+    console.log("Error when calling update user permissions api", error);
+  }
+};
+
+export const getRoles = async () => {
+  try {
+    const response = await API.get("/users/roles");
+    return response.data.roles;
+  } catch (error) {
+    console.log("Error when calling get user roles api", error);
+  }
+};

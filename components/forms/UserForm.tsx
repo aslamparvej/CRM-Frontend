@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
-import { User, Mail, Phone, Lock } from "lucide-react-native";
-import { ScrollView, Text, View, TouchableOpacity } from "react-native";
+import { User, Mail, Phone, Lock, Briefcase } from "lucide-react-native";
+import { ScrollView, Text, View } from "react-native";
 
 import Input from "../ui/Input";
 import Button from "../ui/Button";
@@ -21,16 +21,16 @@ const UserForm: React.FC<UserFormProps> = ({
     name: initialData?.name || "",
     email: initialData?.email || "",
     phone: initialData?.phone || "",
-    role: initialData?.role || "agent",
-    agentType: initialData?.agentType || "",
+    role: initialData?.role || "executive",
+    designation: initialData?.designation || "",
     password: "",
+    confirmPassword: "",
   });
-
 
   const update = (key: string, val: string) =>
     setForm((f) => ({ ...f, [key]: val }));
   const roles = [
-    { value: "agent", label: "Agent" },
+    { value: "executive", label: "Executive" },
     { value: "sub-admin", label: "Sub Admin" },
   ];
 
@@ -65,7 +65,7 @@ const UserForm: React.FC<UserFormProps> = ({
       />
 
       {/* Roles  */}
-      <Text className="text-slate-400 text-sm font-medium mb-2">Role</Text>
+      <Text className="text-slate-400 text-sm font-medium mb-2">Role*</Text>
       <View className="border rounded-lg mb-4 border-gray-300 justify-center">
         <Picker
           selectedValue={form.role}
@@ -81,15 +81,13 @@ const UserForm: React.FC<UserFormProps> = ({
         </Picker>
       </View>
 
-      {/* If role is agent then show agent type   */}
-      {form.role === "agent" && (
-        <Input
-          label="Agent Type *"
-          value={form.agentType}
-          onChangeText={(v) => update("agentType", v)}
-          placeholder="Enter agent type"
-        />
-      )}
+      <Input
+        label="Designation *"
+        value={form.designation}
+        onChangeText={(v) => update("designation", v)}
+        placeholder="Enter designation"
+        leftIcon={<Briefcase size={18} color="#64748B" />}
+      />
 
       {/* Check Add or Edit User */}
       {!initialData?.id && (
@@ -102,14 +100,14 @@ const UserForm: React.FC<UserFormProps> = ({
             placeholder="Min 8 characters"
             leftIcon={<Lock size={18} color="#64748B" />}
           />
-          {/* <Input
+          <Input
             label="Confirm Password *"
             value={form.confirmPassword}
             onChangeText={(v) => update("confirmPassword", v)}
             secureTextEntry
             placeholder="Re-enter password"
             leftIcon={<Lock size={18} color="#64748B" />}
-          /> */}
+          />
         </>
       )}
 

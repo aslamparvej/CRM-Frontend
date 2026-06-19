@@ -5,6 +5,7 @@ import {
   UserCircle,
   ClipboardList,
   BellRing,
+  Bell
 } from "lucide-react-native";
 
 const TabsLayout = () => {
@@ -59,6 +60,16 @@ const TabsLayout = () => {
           title: "Followups",
           tabBarIcon: ({ color, size }) => (
             <BellRing color={color} size={size} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+          tabBarIcon: ({ color, size }) => (
+            <Bell color={color} size={size} />
           ),
         }}
       />
