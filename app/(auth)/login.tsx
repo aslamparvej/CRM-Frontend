@@ -1,32 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, router } from "expo-router";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  KeyboardAvoidingView,
+} from "react-native";
 
 import { useAuthStore } from "@/store/auth.store";
 
 const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [showPassword, setShowPassword] = useState<Boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const { login, isLoading, error } = useAuthStore();
+  const { login, isLoading, error, setError, user } = useAuthStore();
+
+  useEffect(() => {
+    if (user) {
+      router.replace("/dashboard");
+    }
+  }, [user]);
 
   const handleLogin = async () => {
     try {
-      await login(email, password);
-      // if (accessToken) {
-      //   router.replace("/dashboard");
-      // }
-      router.replace("/dashboard");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(email.trim())) {
+        setError("Please enter a valid email address");
+        return;
+      }
+
+      if (password.trim() === "") {
+        setError("Please enter valid password");
+        return;
+      }
+
+      const success = await login(email, password);
+
+      if (success) {
+        router.replace("/dashboard");
+      }
     } catch (error) {
-      console.log("Error in login handler", error); 
+      console.log("Error in login handler", error);
     }
   };
 
   return (
-    <SafeAreaView className="flex-1">
+    <KeyboardAvoidingView className="flex-1">
       <View className="flex-1  px-8 py-4">
         <View className="flex justify-center items-center">
           <Image
@@ -98,7 +122,7 @@ const Login = () => {
           </Link>
         </View>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
