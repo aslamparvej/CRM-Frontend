@@ -26,14 +26,18 @@ const StatsCard: React.FC<StatsCardProps> = ({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.85}
-      className="bg-white rounded-2xl p-4 border border-gray-300"
-      style={{ width: (width - 48) / 2 }}
+      className="rounded-2xl p-4 border border-gray-300 bg-white"
+      style={{ width: (width - 48) / 2}}
     >
       <View className="flex-row items-start justify-between mb-3">
-        <View className="p-2.5 rounded-xl" style={{ backgroundColor: bgColor }}>
+        <View className="flex-row items-center gap-2">
           {icon}
+          <Text className="text-gray-600 text-sm font-medium">{title}</Text>
         </View>
+      </View>
 
+      <View className="flex-row justify-between items-center">
+        <Text className="text-gray-600 text-2xl font-bold">{value}</Text>
         {change !== undefined && (
           <View
             className={`flex-row items-center gap-0.5 px-1.5 py-0.5 rounded-full ${change >= 0 ? "bg-emerald-500/20" : "bg-red-500/20"}`}
@@ -47,9 +51,6 @@ const StatsCard: React.FC<StatsCardProps> = ({
           </View>
         )}
       </View>
-
-      <Text className="text-gray-600 text-2xl font-bold mb-0.5">{value}</Text>
-      <Text className="text=gray-400 text-xs">{title}</Text>
     </TouchableOpacity>
   );
 };

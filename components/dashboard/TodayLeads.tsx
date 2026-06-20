@@ -1,5 +1,5 @@
 import React from "react";
-import { useRoute } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Phone } from "lucide-react-native";
 
@@ -7,14 +7,13 @@ import { Lead } from "@/types/lead.types";
 import getLeadStatusColor from "@/utils/getLeadStatusColor";
 
 import EmptyState from "../ui/EmptyState";
-import Avatar from "../ui/Avatar";
 
 interface TodayLeadsProps {
   leads: Lead[];
 }
 
 const TodayLeads: React.FC<TodayLeadsProps> = ({ leads }) => {
-  const router = useRoute();
+  const router = useRouter();
 
   if (!leads?.length) return <EmptyState title="No leads today yet" />;
 
@@ -24,17 +23,16 @@ const TodayLeads: React.FC<TodayLeadsProps> = ({ leads }) => {
         <TouchableOpacity
           key={lead._id}
           onPress={() => router.push(`/(protected)/leads/details/${lead._id}`)}
-          className="bg-slate-800 rounded-xl p-3.5 border border-slate-700 flex-row items-center gap-3"
+          className="bg-white rounded-xl p-3.5 border border-gray-300 flex-row items-center gap-3"
           activeOpacity={0.8}
         >
-          <Avatar name={lead.name} size={44} />
           <View className="flex-1">
-            <Text className="text-slate-100 font-semibold text-sm">
+            <Text className="text-gray-800 font-semibold text-sm">
               {lead.name}
             </Text>
             <View className="flex-row items-center gap-1 mt-0.5">
               <Phone size={11} color="#64748B" />
-              <Text className="text-slate-400 text-xs">{lead.phone}</Text>
+              <Text className="text-gray-400 text-xs">{lead.phone}</Text>
             </View>
           </View>
           <View

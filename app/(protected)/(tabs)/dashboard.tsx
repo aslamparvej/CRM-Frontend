@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAuthStore } from "@/store/auth.store";
 import { useDashboardStore } from "@/store/dashboard.store";
-import { getDashboardOverview } from "@/services/api/dashboard.api";
+import { getDashboardOverview, getTodayLeads } from "@/services/api/dashboard.api";
 
 import Avatar from "@/components/ui/Avatar";
 import Loader from "@/components/ui/Loader";
@@ -20,6 +20,7 @@ export default function DashboardScreen() {
     useDashboardStore();
 
   const [todayLeads, setTodayLeads] = useState([]);
+  const [todayFollowups, setTodayFollowups] = useState([]);
 
   useEffect(() => {
     loadDashboard();
@@ -28,7 +29,6 @@ export default function DashboardScreen() {
   const loadDashboard = async () => {
     try {
       setLoading(true);
-      // I will implement server call here, please wait for a while
       const res = await getDashboardOverview();
       setStats(res.data);
     } catch (error: any) {
@@ -37,6 +37,24 @@ export default function DashboardScreen() {
       setLoading(false);
     }
   };
+
+  useEffect(()=>{
+    loadTodayLeads();
+  }, []);
+
+  const loadTodayLeads = async ()=> {
+    try {
+      setLoading(true);
+      const res = await getTodayLeads();
+      setTodayLeads(res.data.todayLeads);
+      setTodayFollowups(res.data.todayFollowUps);
+      console.log(res);
+    } catch (error: any) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const getGreeting = () => {
     const h = new Date().getHours();
@@ -55,7 +73,7 @@ export default function DashboardScreen() {
         : ExecutiveDashboard;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100">
+    <SafeAreaView className="flex-1 bg-gray-100" >
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
       <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-300 bg-white">
@@ -68,11 +86,13 @@ export default function DashboardScreen() {
 
       <View className="flex-1 px-4 pt-4">
         {isLoading && !stats ? (
-          <Loader text="Loading dashboard..." />
+          <Loader text="Loading Dashboard" />
         ) : (
           <DashboardComponent
+          
             stats={stats}
             todayLeads={todayLeads}
+            todayFollowups={todayFollowups}
             onNavigate={(path: string) => router.push(path as any)}
           />
         )}
