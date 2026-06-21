@@ -1,30 +1,28 @@
-import { useEffect, useState } from "react";
-import { Redirect, router } from "expo-router";
+import { useEffect } from "react";
+import { Redirect } from "expo-router";
 import { View, ActivityIndicator } from "react-native";
 
 import { getProfile } from "@/services/api/auth.api";
 import { useAuthStore } from "@/store/auth.store";
-import { getToken } from "@/services/storage/secureStorage";
+import { getToken, removeToken } from "@/services/storage/secureStorage";
 
 export default function Index() {
-  const { accessToken, user, setAuth, isLoading, setLoading } = useAuthStore();
+  const { accessToken, setAuth, isLoading, setLoading } = useAuthStore();
 
   const checkLogin = async () => {
+    setLoading(true);
     try {
       const savedToken = await getToken();
 
       // NO TOKEN
-      if (!savedToken) {
-        setLoading(false);
-        router.replace("/(auth)/login");
-        return;
-      }
-
+      if (!savedToken) return;
       const response = await getProfile(savedToken);
       setAuth(response.data, savedToken);
-      router.replace("/(protected)/(tabs)/dashboard");
     } catch (error) {
       console.log(error);
+      await removeToken();
+
+      setAuth(null as any, "");
     } finally {
       setLoading(false);
     }
@@ -49,9 +47,9 @@ export default function Index() {
     );
   }
 
-  if(accessToken){
-     return <Redirect href="/(protected)/(tabs)/dashboard" />;
-  }
-
-  return <Redirect href="/(auth)/login" />;
+  return accessToken ? (
+    <Redirect href="/(protected)/(tabs)/dashboard" />
+  ) : (
+    <Redirect href="/(auth)/login" />
+  );
 }

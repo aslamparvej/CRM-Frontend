@@ -5,10 +5,14 @@ import {
   UserCircle,
   ClipboardList,
   BellRing,
-  Bell
+  Bell,
 } from "lucide-react-native";
 
+import { useAuthStore } from "@/store/auth.store";
+
 const TabsLayout = () => {
+  const { user } = useAuthStore();
+
   return (
     <Tabs
       screenOptions={{
@@ -39,6 +43,7 @@ const TabsLayout = () => {
       <Tabs.Screen
         name="users"
         options={{
+          href: user?.role === "executive" ? null : undefined,
           title: "Users",
           tabBarIcon: ({ color, size }) => <Users color={color} size={size} />,
         }}
@@ -68,9 +73,7 @@ const TabsLayout = () => {
         name="notifications"
         options={{
           title: "Notifications",
-          tabBarIcon: ({ color, size }) => (
-            <Bell color={color} size={size} />
-          ),
+          tabBarIcon: ({ color, size }) => <Bell color={color} size={size} />,
         }}
       />
 

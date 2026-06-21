@@ -12,20 +12,22 @@ const ExecutiveDashboard: React.FC<DashboardProps> = ({
   todayLeads,
   onNavigate,
 }) => {
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
-      <View className="bg-slate-800 rounded-2xl p-4 border border-slate-700 mb-6">
-        <Text className="text-slate-400 text-xs mb-1">Conversion Rate</Text>
-        <Text className="text-slate-100 text-3xl font-bold">
+      <View className="bg-white rounded-2xl p-4 border border-gray-300 mb-6">
+        <Text className="text-gray-800 text-xs mb-1">Conversion Rate</Text>
+        <Text className="text-gray-900 text-3xl font-bold">
           {stats?.conversionRate || 0}%
         </Text>
-        <View className="mt-3 bg-slate-700 h-2 rounded-full overflow-hidden">
+        <View className="mt-3 bg-gray-200 h-2 rounded-full overflow-hidden">
           <View
-            className="bg-indigo-500 h-full rounded-full"
+            className="bg-amber-500 h-full rounded-full"
             style={{ width: `${stats?.conversionRate || 0}%` }}
           />
         </View>
       </View>
+
       <View className="flex-row flex-wrap gap-3 mb-6">
         <StatsCard
           title="My Leads"
