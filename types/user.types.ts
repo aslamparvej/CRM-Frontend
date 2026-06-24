@@ -3,13 +3,14 @@ export interface User {
   name: string;
   email: string;
   phone: string;
-  role: 'admin' | 'sub_admin' | 'agent';
+  role: 'admin' | 'sub-admin' | 'executive';
   avatar?: string;
   isActive: boolean;
   leadsCount?: number;
   conversionRate?: number;
   createdAt: string;
-  totalLeads?: number
+  totalLeads?: number;
+  totalUsers?: number;
 }
 
 export interface UserPermission {

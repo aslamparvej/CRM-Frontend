@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { Plus, Search, Filter } from "lucide-react-native";
+import { Plus, X, SearchX } from "lucide-react-native";
+
 import {
   FlatList,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
   StatusBar,
@@ -15,18 +15,20 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { getUsers } from "@/services/api/user.api";
 import { useUserStore } from "@/store/users.store";
 
-
+import Input from "@/components/ui/Input";
+import Loader from "@/components/ui/Loader";
 import AppHeader from "@/components/ui/Header";
-import  Loader  from "@/components/ui/Loader";
 import UserCard from "@/components/users/UserCard";
 import EmptyState from "@/components/ui/EmptyState";
 
 export default function UsersPage() {
-  const router = useRouter();
   const [search, setSearch] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
   const [roleFilter, setRoleFilter] = useState<string>("");
-  const { users, isLoading, setUsers, setLoading } = useUserStore();
+
+  const router = useRouter();
   const debounced = useDebounce(search, 400);
+  const { users, isLoading, setUsers, setLoading } = useUserStore();
 
   useEffect(() => {
     loadUsers();
@@ -50,19 +52,21 @@ export default function UsersPage() {
 
   const roleFilters = [
     { value: "", label: "All" },
-    { value: "sub_admin", label: "Sub Admin" },
-    { value: "agent", label: "Agent" },
+    { value: "sub-admin", label: "Sub Admin" },
+    { value: "executive", label: "Executive" },
   ];
 
   const renderRightElement = () => {
     return (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => router.push("/(protected)/users/create")}
-        className="p-2 items-center justify-center rounded-xl bg-primary-color"
-      >
-        <Plus color="#000" size={20} />
-      </TouchableOpacity>
+      <>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => router.push("/(protected)/users/create")}
+          className="p-2 items-center justify-center rounded-xl bg-primary-color"
+        >
+          <Plus color="#000" size={20} />
+        </TouchableOpacity>
+      </>
     );
   };
 
@@ -73,6 +77,7 @@ export default function UsersPage() {
         title="Users"
         subtitle="Manage sub-admins & agents"
         showSearch
+        onSearch={() => setShowSearch((prev) => !prev)}
         rightElement={renderRightElement()}
       />
       <View className="px-4 pt-3">
@@ -94,6 +99,19 @@ export default function UsersPage() {
         </View>
       </View>
 
+      {/* Search Bar */}
+      {showSearch && (
+       <View className="px-4 pt-4">
+       <Input
+          value={search}
+          onChangeText={setSearch}
+          placeholder="Search users..."
+          containerClassName="mb-0"
+          rightIcon={ search ? <X size={18} onPress={() => setSearch("") }/> : null}
+        />
+        </View>
+      )}
+
       {isLoading ? (
         <View className="flex-1 flex items-center justify-center">
           <Loader size="large" />
@@ -108,10 +126,10 @@ export default function UsersPage() {
               onPress={() =>
                 router.push(`/(protected)/users/details/${item._id}`)
               }
-              onDelete={()=> console.log("Working on it...")}
+              onDelete={() => console.log("Working on it...")}
             />
           )}
-          contentContainerStyle={{ padding: 16 }}
+          contentContainerStyle={{ padding: 16, }}
           showsVerticalScrollIndicator={false}
           onRefresh={loadUsers}
           refreshing={isLoading}

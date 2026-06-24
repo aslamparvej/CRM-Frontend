@@ -7,18 +7,19 @@ import AppHeader from "@/components/ui/Header";
 import UserForm from "@/components/forms/UserForm";
 import { RegisterPayload } from "@/types/user.types";
 import { createUser } from "@/services/api/user.api";
+import { useUserStore } from "@/store/users.store";
 
 const CreateUserScreen = () => {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
+  const {addUser} = useUserStore();
 
 
   const handleSubmit = async (data: RegisterPayload) => {
     setLoading(true);
     try {
-      console.log("User creation data", data)
       const response = await createUser(data);
       const responseData = response.data;
 
@@ -26,6 +27,7 @@ const CreateUserScreen = () => {
         setError(responseData.message || "Failed to create user. Please try again.");
         return;
       }
+      addUser(responseData.data);
       setError(null);
       router.back();
     } catch (error) {

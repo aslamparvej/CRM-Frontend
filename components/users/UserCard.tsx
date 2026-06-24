@@ -5,6 +5,8 @@ import { Mail, Shield } from "lucide-react-native";
 import { User } from "@/types/user.types";
 import { ROLE_LABELS } from "@/constants/roles";
 
+import Avatar from "../ui/Avatar";
+
 interface UserCardProps {
   user: User;
   onPress: () => void;
@@ -19,8 +21,6 @@ const UserCard: React.FC<UserCardProps> = ({
   onDelete,
 }) => {
 
-  user.totalLeads = 6;
-
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -28,7 +28,7 @@ const UserCard: React.FC<UserCardProps> = ({
       activeOpacity={0.85}
     >
       <View className="flex-row items-center gap-3">
-        {/* <Avatar name={user.name} uri={user.avatar} size={50} /> */}
+        <Avatar name={user.name} uri={user.avatar} size={50} />
 
         <View className="flex-1">
           <View className="flex-row items-center gap-2">
@@ -59,6 +59,11 @@ const UserCard: React.FC<UserCardProps> = ({
             {user.totalLeads !== undefined && (
               <Text className="text-slate-500 text-xs">
                 {user.totalLeads} leads
+              </Text>
+            )}
+            {(user.role === "sub-admin") && user.totalUsers !== undefined && (
+              <Text className="text-slate-500 text-xs">
+                {user.totalUsers} users
               </Text>
             )}
           </View>
