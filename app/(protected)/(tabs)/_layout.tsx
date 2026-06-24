@@ -7,11 +7,13 @@ import {
   BellRing,
   Bell,
 } from "lucide-react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuthStore } from "@/store/auth.store";
 
 const TabsLayout = () => {
   const { user } = useAuthStore();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -20,14 +22,14 @@ const TabsLayout = () => {
         tabBarActiveTintColor: "#EEB30D",
         tabBarInactiveTintColor: "#9CA3AF",
         tabBarStyle: {
-          height: 65,
-          paddingBottom: 8,
-          paddingTop: 8,
+          height: 60 + insets.bottom,
+          paddingBottom: insets.bottom,
         },
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: "600",
         },
+        tabBarHideOnKeyboard: true
       }}
     >
       <Tabs.Screen
