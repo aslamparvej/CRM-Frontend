@@ -5,15 +5,18 @@ import {
   StatusBar,
   TouchableOpacity,
   ScrollView,
+  FlatList,
+  Linking,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Edit2, Power, Trash2 } from "lucide-react-native";
+import { Edit2, Power, Trash2, UserCog } from "lucide-react-native";
 
 import { formatDate } from "@/utils/formatDate";
 import { getUser, toggleActive, deleteUser } from "@/services/api/user.api";
 import { useUserStore } from "@/store/users.store";
 
+import LeadCard from "@/components/leads/LeadCard";
 import Avatar from "@/components/ui/Avatar";
 import Loader from "@/components/ui/Loader";
 import AppHeader from "@/components/ui/Header";
@@ -76,7 +79,7 @@ const UserDetailsScreen = () => {
   );
 
   if (loading) return <Loader fullScreen />;
-  if (!user) return <EmptyState title="User not found" />
+  if (!user) return <EmptyState title="User not found" />;
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
@@ -85,7 +88,7 @@ const UserDetailsScreen = () => {
         title="User Details"
         showBack
         rightElement={
-          <View className="flex-row gap-2">
+          <View className="flex-row items-center gap-2">
             <TouchableOpacity
               onPress={() => router.push(`/(protected)/users/edit/${id}`)}
               className="bg-amber-300 p-2 rounded-xl"
@@ -94,12 +97,25 @@ const UserDetailsScreen = () => {
               <Edit2 size={18} color="#000" />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={handleToggleActive} 
+              onPress={() =>
+                router.push({
+                  pathname: "/(protected)/users/[id]/roles",
+                  params: { id },
+                })
+              }
+              className="p-2 rounded-xl bg-indigo-500/15 border border-indigo-500/30"
+              activeOpacity={0.8}
+            >
+              <UserCog size={18} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleToggleActive}
               className={`p-2 rounded-xl ${user?.isActive ? "bg-amber-500/15" : "bg-emerald-500/15"}`}
               activeOpacity={0.8}
             >
               <Power size={18} color={user?.isActive ? "#F59E0B" : "#10B981"} />
             </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => setShowDelete(true)}
               className="bg-red-500/15 p-2 rounded-xl"
@@ -110,7 +126,7 @@ const UserDetailsScreen = () => {
           </View>
         }
       />
-      <ScrollView showsVerticalScrollIndicator={false} className="flex-1 px-4">
+      <View className="flex-1 px-4">
         <View className="items-center py-6">
           <Avatar name={user.name} uri={user?.avatar} size={76} />
           <Text className="text-gray-800 text-xl font-bold mt-3">
@@ -146,22 +162,10 @@ const UserDetailsScreen = () => {
         </View>
 
         <InfoRow label="Phone" value={user?.phone || "N/A"} />
+        <InfoRow label="Email" value={user?.email || "N/A"} />
         <InfoRow label="Joined" value={formatDate(user?.createdAt, "long")} />
-        <TouchableOpacity
-          onPress={() =>
-            router.push({
-              pathname: "/(protected)/users/[id]/roles",
-              params: { id },
-            })
-          }
-          className="mt-4 bg-indigo-500/15 border border-indigo-500/30 py-3 rounded-xl items-center mb-8"
-          activeOpacity={0.8}
-        >
-          <Text className="text-indigo-400 font-semibold">
-            Manage Permissions
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+        <InfoRow label="Created By" value={user?.createdBy?.name} />    
+      </View>
 
       <ConfirmDialog
         visible={showDelete}
