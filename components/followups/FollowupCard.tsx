@@ -7,7 +7,7 @@ import {
   Car,
   Smartphone,
   Clock,
-  CheckCircle2
+  CheckCircle2,
 } from "lucide-react-native";
 
 import { Followup } from "@/types/followup.types";
@@ -64,6 +64,11 @@ const FollowupCard: React.FC<FollowupCardProps> = ({
                 className={`text-xs ${isOverdue ? "text-red-400" : "text-slate-400"}`}
               >
                 {formatDate(followup.scheduledAt, "short")}
+              </Text>
+              <Text
+                className={`text-xs ${isOverdue ? "text-red-400" : "text-slate-400"}`}
+              >
+                {formatDate(followup.scheduledAt, "time")}
               </Text>
             </View>
             <View

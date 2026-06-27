@@ -47,12 +47,20 @@ const FollowupForm: React.FC<{
       0,
     );
 
+    console.log(followUpAt);
+
     return followUpAt;
   };
 
   const handleSubmit = () => {
-    setForm((f) => ({ ...f, scheduledAt: createFollowUpAt() }));
-    onSubmit({ ...form, leadId });
+    const followUpAt = createFollowUpAt();
+    const payload = {
+      ...form,
+      scheduledAt: followUpAt,
+      leadId,
+    };
+    console.log(form);
+    onSubmit(payload);
 
     setForm({
       type: "call",
