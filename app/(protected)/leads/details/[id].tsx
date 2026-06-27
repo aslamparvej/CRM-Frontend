@@ -20,9 +20,8 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Linking,
   ScrollView,
-  StatusBar
+  StatusBar,
 } from "react-native";
 
 import { Lead } from "@/types/lead.types";
@@ -30,7 +29,7 @@ import { formatDate } from "@/utils/formatDate";
 import { useLeadStore } from "@/store/leads.store";
 import getPriorityColor from "@/utils/getPriorityColor";
 import { createFollowup } from "@/services/api/followups.api";
-import generateWhatsappLink from "@/utils/generateWhatsappLink";
+import { call, whatsApp, email } from "@/utils/communication";
 
 import Avatar from "@/components/ui/Avatar";
 import Loader from "@/components/ui/Loader";
@@ -41,7 +40,7 @@ import LeadActions from "@/components/leads/LeadActions";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import FollowupForm from "@/components/forms/FollowupForm";
 import LeadStatusBadge from "@/components/leads/LeadStatusBadge";
-import { getHistory, getNotes } from "@/services/api/lead.api";
+import { addHistory, getHistory, getNotes } from "@/services/api/lead.api";
 import LeadHistoryList from "@/components/leads/LeadHistoryList";
 
 const LeadDetailsScreen = () => {
@@ -128,6 +127,27 @@ const LeadDetailsScreen = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  // Communication Handler
+  const handleOnCall = async (leadId: string, phone: string) => {
+    await addHistory(leadId, "call_made");
+    call(phone);
+  };
+
+  const handleOnWhatsApp = async (leadId: string, phone: string) => {
+    await addHistory(leadId, "message_send");
+
+    const message = "Hello,\nThank you for your interest.";
+    whatsApp(phone, message);
+  };
+
+  const handleOnEmail = async (leadId: string, emailAddres: string) => {
+    await addHistory(leadId, "email_send");
+
+    const subject = "Test";
+    const message = "Hello,\nThank you for your interest.";
+    email(emailAddres, subject, message);
   };
 
   if (loading) return <Loader fullScreen />;
@@ -252,16 +272,14 @@ const LeadDetailsScreen = () => {
 
           <LeadActions
             lead={lead}
-            onCallPress={() => Linking.openURL(`tel:${lead.phone}`)}
-            onWhatsAppPress={() =>
-              Linking.openURL(generateWhatsappLink(lead.phone))
-            }
-            onEmailPress={() => Linking.openURL(`mailto:${lead.email}`)}
+            onCallPress={() => handleOnCall(lead._id, lead.phone)}
+            onWhatsAppPress={() => handleOnWhatsApp(lead._id, lead.phone)}
+            onEmailPress={() => handleOnEmail(lead._id, lead.email)}
           />
 
           <TouchableOpacity
             // onPress={() => setShowFollowup(true)}
-            onPress={()=> router.push(`/(protected)/leads/follow-up/${id}`)}
+            onPress={() => router.push(`/(protected)/leads/follow-up/${id}`)}
             className="bg-indigo-500/15 border border-indigo-500/30 py-3 rounded-xl items-center flex-row justify-center gap-2"
             activeOpacity={0.8}
           >
@@ -369,7 +387,7 @@ const LeadDetailsScreen = () => {
           )}
           {activeTab === "notes" && (
             <>
-              {notes.slice(0,4).map((note) => (
+              {notes.slice(0, 4).map((note) => (
                 <View
                   key={note.id}
                   className="bg-white rounded-xl p-3.5 mb-2 border border-gray-300"

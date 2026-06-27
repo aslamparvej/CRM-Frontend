@@ -111,3 +111,12 @@ export const getHistory = async (leadId: string) => {
   }
 };
 
+export const addHistory = async (leadId: string, action: string )=> {
+  try {
+    const response = await API.post(`/leads/${leadId}/history`, { action });
+    return response.data;
+  } catch (error) {
+    console.log("Error in add history", error);
+  }
+}
+

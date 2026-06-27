@@ -4,23 +4,23 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
-  Linking,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState, useEffect, useCallback } from "react";
 import { UserCog, Trash2, Plus, Filter } from "lucide-react-native";
-import { useFocusEffect } from "@react-navigation/native";
+// import { useFocusEffect } from "@react-navigation/native";
 
 import { useLeadStore } from "@/store/leads.store";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useLeadFilters } from "@/hooks/useLeadFilters";
+import { call, whatsApp } from "@/utils/communication";
 
 import Loader from "@/components/ui/Loader";
 import AppHeader from "@/components/ui/Header";
 import LeadCard from "@/components/leads/LeadCard";
 import EmptyState from "@/components/ui/EmptyState";
-// import LeadSearch from "@/components/leads/LeadSearch";
+import LeadSearch from "@/components/leads/LeadSearch";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import LeadFiltersSheet from "@/components/leads/LeadFiltersSheet";
 
@@ -35,27 +35,37 @@ export default function LeadsScreen() {
     selectedLeads,
     selectedIds,
     clearSelected,
+    addHistory,
   } = useLeadStore();
   const { filters, setFilters, activeFilterCount } = useLeadFilters();
 
   const [search, setSearch] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [selectionMode, setSelectionMode] = useState(false);
-  const debouncedSearch = useDebounce(search, 400);
 
+  const debouncedSearch = useDebounce(search, 400);
 
   const loadLeads = useCallback(async () => {
     await fetchLeads(true);
   }, [fetchLeads]);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadLeads();
-    }, [loadLeads])
-  );
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     loadLeads();
+  //   }, [loadLeads]),
+  // );
+
+  useCallback(() => {
+    loadLeads();
+  }, [loadLeads]);
+
+  useEffect(() => {
+    setFilters({ ...filters, search: debouncedSearch });
+  }, [debouncedSearch]);
 
   useEffect(() => {
     loadLeads();
@@ -78,6 +88,19 @@ export default function LeadsScreen() {
     setShowDeleteConfirm(true);
   };
 
+  // Communication Handler
+  const HandleOnCall = async (leadId: string, phone: string) => {
+    await addHistory(leadId, "call_made");
+    call(phone);
+  };
+
+  const handleOnWhatsApp = async (leadId: string, phone: string) => {
+    await addHistory(leadId, "message_send");
+
+    const message = "Hello,\nThank you for your interest.";
+    whatsApp(phone, message);
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
@@ -85,14 +108,13 @@ export default function LeadsScreen() {
         title="Leads"
         subtitle="Manage your leads"
         showSearch
+        onSearch={() => setShowSearch((prev) => !prev)}
         rightElement={
           <View className="flex-row gap-2">
             {selectionMode && selectedIds?.length > 0 && (
               <>
                 <TouchableOpacity
-                  onPress={() =>
-                    router.push("/(protected)/leads/bulk-actions")
-                  }
+                  onPress={() => router.push("/(protected)/leads/bulk-actions")}
                   className="bg-indigo-500/20 p-2 rounded-xl"
                   activeOpacity={0.8}
                 >
@@ -135,7 +157,11 @@ export default function LeadsScreen() {
         }
       />
 
-      {/* <LeadSearch value={search} onChangeText={setSearch} /> */}
+      {showSearch && (
+        <View className=" px-4 my-4">
+          <LeadSearch value={search} onChangeText={setSearch} />
+        </View>
+      )}
 
       {selectionMode && (
         <View className="flex-row items-center justify-between px-4 py-2 bg-indigo-500/10 border-b border-indigo-500/20">
@@ -167,18 +193,20 @@ export default function LeadsScreen() {
               }
               onEdit={() => router.push(`/(protected)/leads/edit/${item._id}`)}
               onDelete={() => onDelete(item._id)}
-              selected={selectedLeads?.includes(item._id)}
+              // selected={selectedLeads?.includes(item.id)}
               onSelect={() => {
                 setSelectionMode(true);
                 useLeadStore.getState().toggleSelect(item._id);
               }}
               selectionMode={selectionMode}
-              onCall={() => Linking.openURL(`tel:${item.phone}`)}
-              onWhatsApp={() => Linking.openURL(`whatsapp://send?phone=${item.phone}`)}
+              onCall={() => HandleOnCall(item._id, item.phone)}
+              onWhatsApp={() => handleOnWhatsApp(item._id, item.phone)}
               onUpdateStatus={() => {
                 // Implementation for updating lead status
               }}
-              onFollowUp={()=> router.push(`/(protected)/leads/follow-up/${item._id}`)}
+              onFollowUp={() =>
+                router.push(`/(protected)/leads/follow-up/${item._id}`)
+              }
             />
           )}
           contentContainerStyle={{ padding: 16, paddingTop: 12 }}
@@ -225,3 +253,4 @@ export default function LeadsScreen() {
     </SafeAreaView>
   );
 }
+   

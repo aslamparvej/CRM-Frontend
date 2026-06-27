@@ -41,6 +41,11 @@ const ACTION_CONFIG = {
     bg: "#CCFBF1",
     color: "#0F766E",
   },
+  EMAIL_SENT: {
+    icon: MessageSquare,
+    bg: "#CCFBF1",
+    color: "#0F766E",
+  },
   UPDATED: {
     icon: Edit,
     bg: "#E0E7FF",

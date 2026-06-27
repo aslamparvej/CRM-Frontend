@@ -129,7 +129,7 @@ const LeadCard: React.FC<LeadCardProps> = ({
       )}
 
       <View className="flex-row items-start gap-3">
-        <Avatar name={lead.name} size={46} />
+        {/* <Avatar name={lead.name} size={46} /> */}
 
         <View className="flex-1">
           <View className="flex-row items-center justify-between">

@@ -16,14 +16,14 @@ const LeadSearch: React.FC<LeadSearchProps> = ({
   placeholder,
 }) => {
   return (
-    <View className="flex-row items-center bg-gray-200 border border-gray-300 rounded-xl px-3 mb-4 gap-2">
+    <View className="flex-row items-center bg-transparent border border-gray-300 rounded-xl px-3 gap-2">
       <TextInput
         value={value}
         onChangeText={onChangeText}
         onFocus={onFocus}
         placeholder={placeholder || "Search leads..."}
         placeholderTextColor="#64748B"
-        className="flex-1 text-slate-100 py-3 text-sm"
+        className="flex-1 text-gray-800 py-3 text-sm"
       />
       {value.length > 0 && (
         <TouchableOpacity onPress={() => onChangeText("")}>
