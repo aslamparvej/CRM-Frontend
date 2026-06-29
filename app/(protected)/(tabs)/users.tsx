@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
-import { Plus, X, SearchX } from "lucide-react-native";
+import { Plus, X } from "lucide-react-native";
 
 import {
   FlatList,

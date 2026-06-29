@@ -48,7 +48,6 @@ export default function DashboardScreen() {
       const res = await getTodayLeads();
       setTodayLeads(res.data.todayLeads);
       setTodayFollowups(res.data.todayFollowUps);
-      console.log(res);
     } catch (error: any) {
       setError(error);
     } finally {
