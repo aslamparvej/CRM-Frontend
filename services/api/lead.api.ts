@@ -48,6 +48,11 @@ export const deleteLead = async (id: string) => {
   }
 };
 
+export const assignLead = async(id:string, userId:string) => {
+  const response = await API.patch(`/leads/${id}/assign`, {assignedTo: userId});
+  return response.data;
+}
+
 export const bulkDelete = async (ids: string[]) => {
   try {
     await API.post("/leads/bulk-delete", { ids });

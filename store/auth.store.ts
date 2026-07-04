@@ -1,6 +1,9 @@
 import { create } from "zustand";
 
+import { socket } from "@/services/socket/socket";
 import { loginUser } from "@/services/api/auth.api";
+import { initializeNotifications } from "@/services/notifications/notification";
+import { initializeSocketListeners } from "@/services/socket/socketListeners";
 import { saveToken, removeToken } from "@/services/storage/secureStorage";
 
 // Types
@@ -52,6 +55,13 @@ export const useAuthStore = create<AuthState>((set) => ({
         isLoading: false,
       });
 
+      // Get ALl notification
+      initializeNotifications();
+      // Connect socket after login
+      socket.connect();
+      socket.emit("join", user._id);
+      initializeSocketListeners();
+
       return true;
     } catch (error: any) {
       const message =
@@ -73,6 +83,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: async () => {
     try {
       await removeToken();
+      socket.off("notification:new");
+      socket.disconnect();
     } catch (error: any) {
       console.log("Error to logout", error.message);
     } finally {
@@ -80,7 +92,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         user: null,
         accessToken: null,
         error: null,
-        isLoading: false
+        isLoading: false,
       });
     }
   },

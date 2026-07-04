@@ -10,10 +10,13 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useAuthStore } from "@/store/auth.store";
+import { useNotificationStore } from "@/store/notification.store";
 
 const TabsLayout = () => {
   const { user } = useAuthStore();
   const insets = useSafeAreaInsets();
+
+  const unreadCount = useNotificationStore((state) => state.unreadCount);
 
   return (
     <Tabs
@@ -76,6 +79,7 @@ const TabsLayout = () => {
         options={{
           title: "Notifications",
           tabBarIcon: ({ color, size }) => <Bell color={color} size={size} />,
+          tabBarBadge: unreadCount > 0 ? unreadCount : undefined,
         }}
       />
 

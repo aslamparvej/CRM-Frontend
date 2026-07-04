@@ -207,6 +207,9 @@ export default function LeadsScreen() {
               onFollowUp={() =>
                 router.push(`/(protected)/leads/follow-up/${item._id}`)
               }
+              onAssignLead={() =>
+                router.push(`/(protected)/leads/assign-lead/${item._id}`)
+              }
             />
           )}
           contentContainerStyle={{ padding: 16, paddingTop: 12 }}
@@ -253,4 +256,3 @@ export default function LeadsScreen() {
     </SafeAreaView>
   );
 }
-   

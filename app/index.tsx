@@ -5,6 +5,9 @@ import { View, ActivityIndicator } from "react-native";
 import { getProfile } from "@/services/api/auth.api";
 import { useAuthStore } from "@/store/auth.store";
 import { getToken, removeToken } from "@/services/storage/secureStorage";
+import { socket } from "@/services/socket/socket";
+import { initializeNotifications } from "@/services/notifications/notification";
+import { initializeSocketListeners } from "@/services/socket/socketListeners";
 
 export default function Index() {
   const { accessToken, setAuth, isLoading, setLoading } = useAuthStore();
@@ -18,6 +21,11 @@ export default function Index() {
       if (!savedToken) return;
       const response = await getProfile(savedToken);
       setAuth(response.data, savedToken);
+
+      initializeNotifications();
+      socket.connect();
+      socket.emit("join", response.data._id);
+      initializeSocketListeners();
     } catch (error) {
       console.log(error);
       await removeToken();

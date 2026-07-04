@@ -15,6 +15,7 @@ import {
   bulkAssign,
   bulkUpdateStatus,
   addHistory,
+  assignLead
 } from "@/services/api/lead.api";
 
 interface LeadStore {
@@ -33,6 +34,7 @@ interface LeadStore {
   createLead: (data: Partial<Lead>) => Promise<void>;
   updateLead: (id: string, data: Partial<Lead>) => Promise<void>;
   removeLead: (id: string) => Promise<void>;
+  assignLead: (id: string, userId: string)=> Promise<boolean>;
   fetchNotes: (id: string) => Promise<void>;
   addNote: (id: string, content: string) => Promise<void>;
   fetchHistory: (id: string) => Promise<void>;
@@ -102,6 +104,12 @@ export const useLeadStore = create<LeadStore>((set, get) => ({
   removeLead: async (id) => {
     await deleteLead(id);
     set((state) => ({ leads: state.leads.filter((l) => l._id !== id) }));
+  },
+
+  assignLead: async(id, userId) => {
+    const res = await assignLead(id, userId);
+    set((state)=> ({leads: state.leads.map((l)=> l._id === id ? res.data : l)}))
+    return res.success;
   },
 
   fetchNotes: async (id) => {

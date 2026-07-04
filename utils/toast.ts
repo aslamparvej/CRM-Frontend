@@ -1,5 +1,7 @@
 import Toast from "react-native-toast-message";
 
+import { Notification } from "@/types/notification.types";
+
 export const showSuccess = (message: string) => {
   Toast.show({
     type: "success",
@@ -23,6 +25,15 @@ export const showInfo = (message: string) => {
     type: "info",
     text1: "Info",
     text2: message,
+    position: "top",
+  });
+};
+
+export const showNotificationToast = (notification: Notification) => {
+  Toast.show({
+    type: "info",
+    text1: notification.title,
+    text2: notification.message,
     position: "top",
   });
 };

@@ -32,6 +32,7 @@ interface LeadCardProps {
   onWhatsApp?: () => void;
   onUpdateStatus?: () => void;
   onFollowUp?: ()=> void;
+  onAssignLead?: ()=> void;
 }
 
 const LeadCard: React.FC<LeadCardProps> = ({
@@ -46,6 +47,7 @@ const LeadCard: React.FC<LeadCardProps> = ({
   onWhatsApp,
   onUpdateStatus,
   onFollowUp,
+  onAssignLead
 }) => {
   const priorityColor = getPriorityColor(lead.priority);
 
@@ -100,6 +102,9 @@ const LeadCard: React.FC<LeadCardProps> = ({
         break;
       case "updateStatus":
         onUpdateStatus?.();
+        break;
+      case "assignLead":
+        onAssignLead?.();
         break;
       case "followup":
         onFollowUp?.();
