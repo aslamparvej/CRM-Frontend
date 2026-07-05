@@ -8,6 +8,7 @@ import { Picker } from "@react-native-picker/picker";
 interface SelectOption {
   label: string;
   value: string;
+  color?: string;
 }
 
 interface SelectProps {
@@ -42,17 +43,18 @@ const Select: React.FC<SelectProps> = ({
       )}
 
       <View
-        className={`flex-row items-center border rounded-xl px-2 ${
+        className={`h-12 py-0 ps-3 pe-0 flex-row items-center border rounded-xl  ${
           error ? "border-red-500" : "border-gray-300"
         }`}
       >
-        {leftIcon && <View className="mr-2">{leftIcon}</View>}
+        {leftIcon && <View className="">{leftIcon}</View>}
 
         <Picker
           selectedValue={value}
           onValueChange={onValueChange}
           enabled={enabled}
           style={{ flex: 1 }}
+          mode="dropdown"
         >
           {placeholder && (
             <Picker.Item label={placeholder} value="" enabled={false} />
@@ -63,6 +65,7 @@ const Select: React.FC<SelectProps> = ({
               key={option.value}
               label={option.label}
               value={option.value}
+              color={option.color || (option.value === value ? "#EEB30D" : "#6B7280")}
             />
           ))}
         </Picker>

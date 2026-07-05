@@ -7,6 +7,8 @@ import { getUsers } from "@/services/api/user.api";
 import { LEAD_PRIORITIES } from "@/constants/status";
 import { DEFAULT_CATEGORIES } from "@/constants/categories";
 
+import { useLeadStatusStore } from "@/store/leadStatus.store";
+
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import Select from "../ui/Select";
@@ -39,9 +41,15 @@ const LeadForm: React.FC<LeadFormProps> = ({
   });
 
   const { users, setUsers, setLoading } = useUserStore();
+  const { loadStatuses, statuses } = useLeadStatusStore();
 
-  useEffect(()=>{
-    loadUsers();
+  useEffect(() => {
+    if (users.length === 0) {
+      loadUsers();
+    }
+    if (statuses.length === 0) {
+      loadStatuses();
+    }
   }, []);
 
   const loadUsers = async () => {
@@ -56,7 +64,6 @@ const LeadForm: React.FC<LeadFormProps> = ({
       setLoading(false);
     }
   };
-  console.log("Debugging starts ---> Lead Form", users);
 
   const update = (key: string, val: string) =>
     setForm((f) => ({ ...f, [key]: val }));
@@ -178,11 +185,22 @@ const LeadForm: React.FC<LeadFormProps> = ({
       />
 
       <SectionTitle title="Lead Details" />
-      <Input
+      {/* <Input
         label="Status"
         value={form.status}
         onChangeText={(v) => update("status", v)}
         placeholder="e.g. New, Contacted, Qualified"
+        leftIcon={<CircleDot size={18} color="#64748B" />}
+      /> */}
+      <Select
+        label="Status"
+        value={form.status || ""}
+        options={statuses.map((status) => ({
+          value: status._id,
+          label: status.name,
+          color: status.color,
+        }))}
+        onValueChange={(v) => update("status", v)}
         leftIcon={<CircleDot size={18} color="#64748B" />}
       />
       <SelectChips
@@ -205,14 +223,6 @@ const LeadForm: React.FC<LeadFormProps> = ({
         placeholder="e.g. Website, Referral"
         leftIcon={<Radio size={18} color="#64748B" />}
       />
-      {/* <Input
-        label="Notes"
-        value={form.notes}
-        onChangeText={(v) => update("notes", v)}
-        placeholder="Add initial notes..."
-        multiline
-        numberOfLines={3}
-      /> */}
 
       <Select
         label="Assign To"
