@@ -15,7 +15,8 @@ import {
   bulkAssign,
   bulkUpdateStatus,
   addHistory,
-  assignLead
+  assignLead,
+  updateStatus,
 } from "@/services/api/lead.api";
 
 interface LeadStore {
@@ -34,7 +35,8 @@ interface LeadStore {
   createLead: (data: Partial<Lead>) => Promise<void>;
   updateLead: (id: string, data: Partial<Lead>) => Promise<void>;
   removeLead: (id: string) => Promise<void>;
-  assignLead: (id: string, userId: string)=> Promise<boolean>;
+  assignLead: (id: string, userId: string) => Promise<boolean>;
+  updateStatus: (id: string, status: string) => Promise<boolean>;
   fetchNotes: (id: string) => Promise<void>;
   addNote: (id: string, content: string) => Promise<void>;
   fetchHistory: (id: string) => Promise<void>;
@@ -106,9 +108,19 @@ export const useLeadStore = create<LeadStore>((set, get) => ({
     set((state) => ({ leads: state.leads.filter((l) => l._id !== id) }));
   },
 
-  assignLead: async(id, userId) => {
+  assignLead: async (id, userId) => {
     const res = await assignLead(id, userId);
-    set((state)=> ({leads: state.leads.map((l)=> l._id === id ? res.data : l)}))
+    set((state) => ({
+      leads: state.leads.map((l) => (l._id === id ? res.data : l)),
+    }));
+    return res.success;
+  },
+
+  updateStatus: async (id, status) => {
+    const res = await updateStatus(id, status);
+    set((state) => ({
+      leads: state.leads.map((l) => (l._id === id ? res.data : l)),
+    }));
     return res.success;
   },
 

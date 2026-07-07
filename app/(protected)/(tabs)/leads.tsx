@@ -53,12 +53,6 @@ export default function LeadsScreen() {
     await fetchLeads(true);
   }, [fetchLeads]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     loadLeads();
-  //   }, [loadLeads]),
-  // );
-
   useCallback(() => {
     loadLeads();
   }, [loadLeads]);
@@ -201,9 +195,7 @@ export default function LeadsScreen() {
               selectionMode={selectionMode}
               onCall={() => HandleOnCall(item._id, item.phone)}
               onWhatsApp={() => handleOnWhatsApp(item._id, item.phone)}
-              onUpdateStatus={() => {
-                // Implementation for updating lead status
-              }}
+              onUpdateStatus={() => router.push(`/(protected)/leads/update-status/${item._id}`)}
               onFollowUp={() =>
                 router.push(`/(protected)/leads/follow-up/${item._id}`)
               }

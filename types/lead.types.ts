@@ -1,5 +1,10 @@
 import { User } from "./user.types";
 
+interface Status {
+    _id: string,
+    name: string
+}
+
 export interface Lead {
   _id: string;
   name: string;
@@ -8,7 +13,7 @@ export interface Lead {
   alternatePhone?: string;
   address?: string;
 
-  status: string;
+  status: Status;
   priority: string;
   category: string;
   source: string;

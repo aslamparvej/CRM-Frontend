@@ -147,7 +147,7 @@ const LeadCard: React.FC<LeadCardProps> = ({
             </Text>
 
             <View className="flex-row items-center gap-2">
-              <LeadStatusBadge status={lead.status} />
+              <LeadStatusBadge status={lead.status?.name} />
               {!selectionMode && (
                 // <TouchableOpacity
                 //   onPress={() => setMenuOpen(true)}

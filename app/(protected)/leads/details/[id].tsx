@@ -246,7 +246,7 @@ const LeadDetailsScreen = () => {
                 {lead.name}
               </Text>
               <View className="flex-row items-center gap-2 mt-1">
-                <LeadStatusBadge status={lead.status} />
+                <LeadStatusBadge status={lead.status.name} />
                 <View
                   style={{
                     backgroundColor: `${getPriorityColor(lead.priority)}20`,

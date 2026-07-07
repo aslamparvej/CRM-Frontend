@@ -8,7 +8,8 @@ const LeadStatusBadge: React.FC<{ status: string; size?: "sm" | "md" }> = ({
   size = "md",
 }) => {
   const color = getLeadStatusColor(status);
-  const label = status ? status.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "";
+  const label = status ? status?.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "";
+  // const label = status ? status : "";
   return (
     <View
       style={{

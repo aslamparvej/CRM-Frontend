@@ -7,7 +7,7 @@ import {
   MessageSquare,
   Edit,
   XCircle,
-  Clock
+  Clock,
 } from "lucide-react-native";
 
 const ACTION_CONFIG = {
@@ -47,6 +47,11 @@ const ACTION_CONFIG = {
     color: "#0F766E",
   },
   UPDATED: {
+    icon: Edit,
+    bg: "#E0E7FF",
+    color: "#4F46E5",
+  },
+  UPDATED_STATUS: {
     icon: Edit,
     bg: "#E0E7FF",
     color: "#4F46E5",
