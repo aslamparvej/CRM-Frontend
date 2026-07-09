@@ -9,5 +9,6 @@ export interface Followup {
   status: "pending" | "completed" | "missed" | "rescheduled";
   completedAt?: string;
   createdBy: string;
+  createdByName: string;
   createdAt: string;
 }

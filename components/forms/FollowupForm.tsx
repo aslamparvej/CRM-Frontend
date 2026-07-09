@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import {
   Phone,
@@ -7,17 +7,26 @@ import {
   Car,
   MessageSquare,
 } from "lucide-react-native";
-
 import DateTimePicker from "@react-native-community/datetimepicker";
+
+import { Followup } from "@/types/followup.types";
 
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 
-const FollowupForm: React.FC<{
+interface FollowupFormProps {
   leadId?: string;
+  followup?: Followup;
   onSubmit: (d: any) => void;
   isLoading?: boolean;
-}> = ({ leadId, onSubmit, isLoading }) => {
+}
+
+const FollowupForm: React.FC<FollowupFormProps> = ({
+  leadId,
+  followup,
+  onSubmit,
+  isLoading,
+}) => {
   const [showDate, setShowDate] = useState(false);
   const [showTime, setShowTime] = useState(false);
   const [followUpDate, setFollowUpDate] = useState(new Date());
@@ -58,10 +67,32 @@ const FollowupForm: React.FC<{
       ...form,
       scheduledAt: followUpAt,
       leadId,
+      ...(followup && { id: followup.id }),
     };
-    console.log(form);
     onSubmit(payload);
 
+    if (!followup) {
+      resetForm();
+    }
+  };
+
+  // Check initial followup
+  useEffect(() => {
+    if (!followup) return;
+
+    const date = new Date(followup.scheduledAt);
+
+    setForm({
+      type: followup.type,
+      scheduledAt: date,
+      note: followup.note || "",
+    });
+
+    setFollowUpDate(date);
+    SetfollowUpTime(date);
+  }, [followup]);
+
+  const resetForm = () => {
     setForm({
       type: "call",
       scheduledAt: new Date(),
@@ -151,7 +182,7 @@ const FollowupForm: React.FC<{
         numberOfLines={3}
       />
       <Button
-        label="Schedule Follow-up"
+        label={followup ? "Update Follow-up" : "Schedule Follow-up"}
         onPress={handleSubmit}
         loading={isLoading}
         fullWidth

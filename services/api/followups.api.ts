@@ -2,12 +2,8 @@ import API from "./axios";
 import { Followup } from "@/types/followup.types";
 
 export const createFollowup = async (payload: Partial<Followup>) => {
-  try {
-    const response = await API.post("followups", payload);
-    return response.data;
-  } catch (error) {
-    console.log("Error to creating followups", error);
-  }
+  const response = await API.post("followups", payload);
+  return response.data;
 };
 
 export const getFollowups = async (params?: {
@@ -15,21 +11,26 @@ export const getFollowups = async (params?: {
   date?: Date;
   leadId?: string;
 }) => {
-  try {
-    const reponse = await API.get("/followups", { params });
-
-    return reponse.data;
-  } catch (error) {
-    console.log("Error to fetching followups", error);
-  }
+  const reponse = await API.get("/followups", { params });
+  return reponse.data;
 };
 
-export const completeFollowup = async (id: string, note?: string) => {
-  try {
-    const response = await API.patch(`/followups/${id}/done`);
+export const fetchFollowupById = async (id: string) => {
+  const response = await API.get(`/followups/${id}`);
+  return response.data;
+};
 
-    return response.data;
-  } catch (error) {
-    console.log("Error to mark complete followups", error);
-  }
+export const getFollowupByLeadId = async (leadId: string) => {
+  const response = await API.get(`/followups/lead/${leadId}`);
+  return response.data;
+};
+
+export const completeFollowup = async (id: string) => {
+  const response = await API.patch(`/followups/${id}/done`);
+  return response.data;
+};
+
+export const updateFollowUp = async (id: string, payload: Partial<Followup>) => {
+  const response = await API.put(`/followups/${id}`, payload);
+  return response.data;
 };

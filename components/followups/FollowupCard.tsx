@@ -33,8 +33,8 @@ const FollowupCard: React.FC<FollowupCardProps> = ({
   onPress,
 }) => {
   const isOverdue =
-    new Date(followup.scheduledAt) < new Date() &&
-    followup.status === "pending";
+    ["pending", "rescheduled"].includes(followup.status) &&
+    new Date(followup.scheduledAt) < new Date();
 
   return (
     <TouchableOpacity
@@ -88,7 +88,7 @@ const FollowupCard: React.FC<FollowupCardProps> = ({
             </Text>
           )}
         </View>
-        {followup.status === "pending" && (
+        {followup.status === "pending" || followup.status === "rescheduled" ? (
           <TouchableOpacity
             onPress={onComplete}
             className="bg-emerald-500/20 p-2 rounded-xl"
@@ -96,7 +96,7 @@ const FollowupCard: React.FC<FollowupCardProps> = ({
           >
             <CheckCircle2 size={20} color="#10B981" />
           </TouchableOpacity>
-        )}
+        ): null}
       </View>
     </TouchableOpacity>
   );

@@ -81,7 +81,7 @@ export default function FollowupsPage() {
     },
     {
       key: "completed",
-      label: "Done",
+      label: "Completed",
       icon: (
         <CheckCircle2
           size={13}
@@ -138,11 +138,11 @@ export default function FollowupsPage() {
               followup={item}
               onComplete={() => handleComplete(item.id)}
               onPress={() =>
-                router.push(`/(protected)/leads/details/${item.leadId}`)
+                router.push(`/(protected)/followup/details/${item.id}`)
               }
             />
           )}
-          contentContainerStyle={{ padding: 16 }}
+          contentContainerStyle={{ padding: 16, flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
           onRefresh={loadFollowups}
           refreshing={isLoading}
