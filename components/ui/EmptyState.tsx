@@ -33,7 +33,7 @@ const EmptyState: React.FC<emptyStateProps> = ({
       )}
 
       {action && (
-        <Button label={action.label} onPress={action.onPress} size="sm" />
+        <Button label={action.label} onPress={action.onPress} size="sm" className="mt-4" />
       )}
     </View>
   );
