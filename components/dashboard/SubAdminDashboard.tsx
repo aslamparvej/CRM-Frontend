@@ -8,12 +8,14 @@ import AdminDashboard from "./AdminDashboard";
 const SubAdminDashboard: React.FC<DashboardProps> = ({
   stats,
   todayLeads,
+  todayFollowups,
   onNavigate,
 }) => {
   return (
     <AdminDashboard
       stats={stats}
       todayLeads={todayLeads}
+      todayFollowups={todayFollowups}
       onNavigate={onNavigate}
     />
   );

@@ -204,7 +204,7 @@ export default function LeadsScreen() {
               }
             />
           )}
-          contentContainerStyle={{ padding: 16, paddingTop: 12 }}
+          contentContainerStyle={{ padding: 16, paddingTop: 12, flexGrow: 1 }}
           showsVerticalScrollIndicator={false}
           onRefresh={loadLeads}
           refreshing={isLoading}

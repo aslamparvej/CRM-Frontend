@@ -34,11 +34,10 @@ const LeadNotesScreen = () => {
   const handleAdd = async (content: string) => {
     setAddLoading(true);
     try {
-      console.log("Add Note", content);
       const res = await addNote(id!, content);
       setNotes((n) => [res.data, ...n]);
     } catch (error) {
-      console.log(error);
+      console.error("Error adding note:", error);
     } finally {
       setAddLoading(false);
     }

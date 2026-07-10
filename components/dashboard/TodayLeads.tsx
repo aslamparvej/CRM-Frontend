@@ -37,7 +37,7 @@ const TodayLeads: React.FC<TodayLeadsProps> = ({ leads }) => {
           </View>
           <View
             style={{
-              backgroundColor: `${getLeadStatusColor(lead.status)}20`,
+              backgroundColor: `${getLeadStatusColor(lead.status.name)}20`,
               paddingHorizontal: 8,
               paddingVertical: 4,
               borderRadius: 8,
@@ -45,13 +45,13 @@ const TodayLeads: React.FC<TodayLeadsProps> = ({ leads }) => {
           >
             <Text
               style={{
-                color: getLeadStatusColor(lead.status),
+                color: getLeadStatusColor(lead.status.name),
                 fontSize: 11,
                 fontWeight: "600",
                 textTransform: "capitalize",
               }}
             >
-              {lead.status.replace("_", " ")}
+              {lead.status.name.replace("_", " ")}
             </Text>
           </View>
         </TouchableOpacity>

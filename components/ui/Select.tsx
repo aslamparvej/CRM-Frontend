@@ -57,7 +57,7 @@ const Select: React.FC<SelectProps> = ({
           mode="dropdown"
         >
           {placeholder && (
-            <Picker.Item label={placeholder} value="" enabled={false} />
+            <Picker.Item label={placeholder} value=""  color="#9CA3AF" />
           )}
 
           {options.map((option) => (

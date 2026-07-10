@@ -32,7 +32,7 @@ export const getLeadById = async (id: string) => {
 };
 
 export const updateLead = async (id: string, payload: Partial<Lead>) => {
-    try {
+  try {
     const response = await API.put(`/leads/${id}`, payload);
     return response.data;
   } catch (error) {
@@ -48,15 +48,17 @@ export const deleteLead = async (id: string) => {
   }
 };
 
-export const assignLead = async(id:string, userId:string) => {
-  const response = await API.patch(`/leads/${id}/assign`, {assignedTo: userId});
+export const assignLead = async (id: string, userId: string) => {
+  const response = await API.patch(`/leads/${id}/assign`, {
+    assignedTo: userId,
+  });
   return response.data;
-}
+};
 
-export const updateStatus = async(id:string, status:string) => {
-  const response = await API.patch(`/leads/${id}/status`, {status});
+export const updateStatus = async (id: string, status: string) => {
+  const response = await API.patch(`/leads/${id}/status`, { status });
   return response.data;
-}
+};
 
 export const bulkDelete = async (ids: string[]) => {
   try {
@@ -86,27 +88,20 @@ export const getNotes = async (leadId: string) => {
   try {
     const response = await API.get(`/leads/${leadId}/notes`);
     return response.data;
-  }
-  catch (error) {
+  } catch (error) {
     console.log("Error when calling get lead notes api", error);
   }
 };
 
 export const addNote = async (leadId: string, content: string) => {
-  try {
-    const response = await API.post(`/leads/${leadId}/notes`, { content });
-    return response.data;
-  }
-  catch (error) {
-    console.log("Error when calling add lead note api", error);
-  }
+  const response = await API.post(`/leads/${leadId}/notes`, { content });
+  return response.data;
 };
 
 export const deleteNote = async (leadId: string, noteId: string) => {
   try {
     await API.delete(`/leads/${leadId}/notes/${noteId}`);
-  }
-  catch (error) {
+  } catch (error) {
     console.log("Error when calling delete lead note api", error);
   }
 };
@@ -115,18 +110,16 @@ export const getHistory = async (leadId: string) => {
   try {
     const response = await API.get(`/leads/${leadId}/history`);
     return response.data;
-  }
-  catch (error) {
+  } catch (error) {
     console.log("Error when calling get lead history api", error);
   }
 };
 
-export const addHistory = async (leadId: string, action: string )=> {
+export const addHistory = async (leadId: string, action: string) => {
   try {
     const response = await API.post(`/leads/${leadId}/history`, { action });
     return response.data;
   } catch (error) {
-    console.log("Error in add history", error);
+    console.error("Error in add history", error);
   }
-}
-
+};

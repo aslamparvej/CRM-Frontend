@@ -54,7 +54,6 @@ const LeadForm: React.FC<LeadFormProps> = ({
 
   const loadUsers = async () => {
     setLoading(true);
-
     try {
       const response = await getUsers();
       setUsers(response.data.data);
@@ -185,13 +184,6 @@ const LeadForm: React.FC<LeadFormProps> = ({
       />
 
       <SectionTitle title="Lead Details" />
-      {/* <Input
-        label="Status"
-        value={form.status}
-        onChangeText={(v) => update("status", v)}
-        placeholder="e.g. New, Contacted, Qualified"
-        leftIcon={<CircleDot size={18} color="#64748B" />}
-      /> */}
       <Select
         label="Status"
         value={form.status || ""}
@@ -202,6 +194,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
         }))}
         onValueChange={(v) => update("status", v)}
         leftIcon={<CircleDot size={18} color="#64748B" />}
+        placeholder="Select status"
       />
       <SelectChips
         label="Priority"
@@ -229,6 +222,7 @@ const LeadForm: React.FC<LeadFormProps> = ({
         value={form.assignedTo || ""}
         options={users.map((user) => ({ value: user._id, label: user.name }))}
         onValueChange={(v) => update("assignedTo", v)}
+        placeholder="Select user to assign"
       />
 
       <Button

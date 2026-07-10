@@ -91,8 +91,8 @@ export const useLeadStore = create<LeadStore>((set, get) => ({
   },
 
   createLead: async (data) => {
-    const res = await createLead(data);
-    set((state) => ({ leads: [res, ...state.leads] }));
+    const response = await createLead(data);
+    set((state) => ({ leads: [response.data, ...state.leads] }));
   },
 
   updateLead: async (id, data) => {

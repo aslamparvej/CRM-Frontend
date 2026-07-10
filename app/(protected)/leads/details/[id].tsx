@@ -68,10 +68,9 @@ const LeadDetailsScreen = () => {
   const fetchLead = async () => {
     try {
       const data = await fetchLeadById(id);
-      console.log(data);
       setLead(data || null);
     } catch (error) {
-      console.log("Error fetching lead:", error);
+      console.error("Error fetching lead:", error);
     } finally {
       setLoading(false);
     }
@@ -83,7 +82,7 @@ const LeadDetailsScreen = () => {
       setShowDelete(false);
       router.push("/(protected)/(tabs)/leads");
     } catch (error) {
-      console.log("Error deleting lead", error);
+      console.error("Error deleting lead", error);
     }
   };
 
@@ -94,7 +93,7 @@ const LeadDetailsScreen = () => {
       await createFollowup(data);
       setShowFollowup(false);
     } catch (error) {
-      console.log("Error creating followup", error);
+      console.error("Error creating followup", error);
     } finally {
       setFollowupLoading(false);
     }
@@ -109,7 +108,7 @@ const LeadDetailsScreen = () => {
       const res = await getHistory(id);
       setHistory(res.data);
     } catch (error) {
-      console.log(error);
+      console.error("Error loading history:", error);
     } finally {
       setLoading(false);
     }

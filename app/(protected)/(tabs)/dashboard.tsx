@@ -67,7 +67,7 @@ export default function DashboardScreen() {
   const DashboardComponent =
     user?.role === "admin"
       ? AdminDashboard
-      : user?.role === "sub_admin"
+      : user?.role === "sub-admin"
         ? SubAdminDashboard
         : ExecutiveDashboard;
 
