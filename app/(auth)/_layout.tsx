@@ -51,9 +51,9 @@ const AuthLayout = () => {
         animation: "slide_from_right",
       }}
     >
-      <Stack.Screen name="login/index" />
-      <Stack.Screen name="register/index" />
-      <Stack.Screen name="forgot-password/index" />
+      <Stack.Screen name="login" />
+      <Stack.Screen name="register" />
+      <Stack.Screen name="forgot-password" />
     </Stack>
   );
 };
