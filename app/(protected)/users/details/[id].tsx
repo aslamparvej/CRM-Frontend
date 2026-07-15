@@ -4,9 +4,6 @@ import {
   Text,
   StatusBar,
   TouchableOpacity,
-  ScrollView,
-  FlatList,
-  Linking,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,7 +13,7 @@ import { formatDate } from "@/utils/formatDate";
 import { getUser, toggleActive, deleteUser } from "@/services/api/user.api";
 import { useUserStore } from "@/store/users.store";
 
-import LeadCard from "@/components/leads/LeadCard";
+import Button from "@/components/ui/Button";
 import Avatar from "@/components/ui/Avatar";
 import Loader from "@/components/ui/Loader";
 import AppHeader from "@/components/ui/Header";
@@ -40,10 +37,9 @@ const UserDetailsScreen = () => {
   const load = async () => {
     try {
       const response = await getUser(id);
-      console.log("User data", response.data);
       setUser(response.data);
     } catch (error: any) {
-      console.log("Error fetching user details, ", error);
+      console.error("Error fetching user details, ", error);
     } finally {
       setLoading(false);
     }
@@ -165,6 +161,10 @@ const UserDetailsScreen = () => {
         <InfoRow label="Email" value={user?.email || "N/A"} />
         <InfoRow label="Joined" value={formatDate(user?.createdAt, "long")} />
         <InfoRow label="Created By" value={user?.createdBy?.name} />    
+
+        <View>
+          <Button label="VIew Activities" onPress={()=> router.push(`/(protected)/users/activity/${id}`) } />
+        </View>
       </View>
 
       <ConfirmDialog
