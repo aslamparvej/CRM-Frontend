@@ -26,6 +26,7 @@ export interface DropdownProps {
   align?: "start" | "end";
   dotColor?: string;
   triggerSize?: number;
+  icon?: React.ReactNode;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -36,6 +37,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   align = "end",
   dotColor = "#6b7280",
   triggerSize = 36,
+  icon
 }) => {
   const [open, setOpen] = useState(false);
   const [layout, setLayout] = useState({ x: 0, y: 0, width: 0, height: 0 });
@@ -85,9 +87,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
         <TouchableOpacity
           onPress={open ? closeMenu : openMenu}
           activeOpacity={0.6}
-          className="p-1"
+          className={icon ? "" : `p-1`}
         >
-          <MoreVertical size={16} color="#64748B" />
+          {icon ? icon : <MoreVertical size={16} color="#64748B" />}
         </TouchableOpacity>
       </View>
 

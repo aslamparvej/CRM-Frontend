@@ -4,17 +4,26 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  Alert,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { useState, useEffect, useCallback } from "react";
-import { UserCog, Trash2, Plus, Filter } from "lucide-react-native";
+import {
+  UserCog,
+  Trash2,
+  Plus,
+  Filter,
+  SquarePen,
+  ContactRound,
+  FileSpreadsheet,
+} from "lucide-react-native";
 // import { useFocusEffect } from "@react-navigation/native";
 
 import { useLeadStore } from "@/store/leads.store";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useLeadFilters } from "@/hooks/useLeadFilters";
-import { call, whatsApp } from "@/utils/communication";
+import { call, whatsApp, email } from "@/utils/communication";
 
 import Loader from "@/components/ui/Loader";
 import AppHeader from "@/components/ui/Header";
@@ -23,6 +32,26 @@ import EmptyState from "@/components/ui/EmptyState";
 import LeadSearch from "@/components/leads/LeadSearch";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import LeadFiltersSheet from "@/components/leads/LeadFiltersSheet";
+import { Dropdown, DropdownItem } from "@/components/ui/Dropdown";
+import { showInfo } from "@/utils/toast";
+
+const LeadCreateOptions: DropdownItem[] = [
+  {
+    key: "manual",
+    label: "Manual Entry",
+    icon: <SquarePen size={16} color="#3B82F6" />,
+  },
+  {
+    key: "contact",
+    label: "Import Contacts",
+    icon: <ContactRound size={16} color="#10B981" />,
+  },
+  {
+    key: "csv",
+    label: "Import CSV",
+    icon: <FileSpreadsheet size={16} color="#F59E0B" />,
+  },
+];
 
 export default function LeadsScreen() {
   const router = useRouter();
@@ -95,6 +124,28 @@ export default function LeadsScreen() {
     whatsApp(phone, message);
   };
 
+  const handleOnEmail = async (leadId: string, emailAddres: string) => {
+    await addHistory(leadId, "email_send");
+
+    const subject = "Test";
+    const message = "Hello,\nThank you for your interest.";
+    email(emailAddres, subject, message);
+  };
+
+  const handleMenuSelect = (item: DropdownItem) => {
+    switch (item.key) {
+      case "manual":
+        router.push("/(protected)/leads/create");
+        break;
+      case "contact":
+        showInfo("Work inprogress.");
+        break;
+      case "csv":
+        showInfo("Work inprogress.");
+        break;
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
@@ -140,13 +191,16 @@ export default function LeadsScreen() {
                 </View>
               )}
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push("/(protected)/leads/create")}
+            <View
               className="bg-primary-color p-2 rounded-xl"
-              activeOpacity={0.8}
             >
-              <Plus size={20} color="#000" />
-            </TouchableOpacity>
+              <Dropdown
+                items={LeadCreateOptions}
+                align="end"
+                onSelect={(item) => handleMenuSelect(item)}
+                icon={<Plus size={20} color="#1f2937"  />}
+              />
+            </View>
           </View>
         }
       />
@@ -195,7 +249,10 @@ export default function LeadsScreen() {
               selectionMode={selectionMode}
               onCall={() => HandleOnCall(item._id, item.phone)}
               onWhatsApp={() => handleOnWhatsApp(item._id, item.phone)}
-              onUpdateStatus={() => router.push(`/(protected)/leads/update-status/${item._id}`)}
+              onEmail={() => handleOnEmail(item._id, item.email)}
+              onUpdateStatus={() =>
+                router.push(`/(protected)/leads/update-status/${item._id}`)
+              }
               onFollowUp={() =>
                 router.push(`/(protected)/leads/follow-up/${item._id}`)
               }

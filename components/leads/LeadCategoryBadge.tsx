@@ -1,14 +1,16 @@
 import React from "react";
 import { Text, View } from "react-native";
+import getCategoryColor from "@/utils/getCategoryColor";
 
-const LeadStatusBadge: React.FC<{ status: string; size?: "sm" | "md"; color: string }> = ({
-  status,
-  size = "md",
-  color
-}) => {
-  // const color = getLeadStatusColor(status);
-  const label = status ? status?.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase()) : "";
-  // const label = status ? status : "";
+const LeadCategoryBadge: React.FC<{
+  category: string;
+  size?: "sm" | "md";
+  color?: string;
+}> = ({ category, size = "md", color }) => {
+  color = color ? color : getCategoryColor(category);
+  const label = category
+    ? category?.replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase())
+    : "";
   return (
     <View
       style={{
@@ -32,4 +34,4 @@ const LeadStatusBadge: React.FC<{ status: string; size?: "sm" | "md"; color: str
   );
 };
 
-export default LeadStatusBadge;
+export default LeadCategoryBadge;

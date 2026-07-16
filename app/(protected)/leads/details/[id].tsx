@@ -28,8 +28,10 @@ import { Lead } from "@/types/lead.types";
 import { formatDate } from "@/utils/formatDate";
 import { useLeadStore } from "@/store/leads.store";
 import getPriorityColor from "@/utils/getPriorityColor";
+import getCategoryColor from "@/utils/getCategoryColor";
 import { createFollowup } from "@/services/api/followups.api";
 import { call, whatsApp, email } from "@/utils/communication";
+import { useAuthStore } from "@/store/auth.store";
 
 import Avatar from "@/components/ui/Avatar";
 import Loader from "@/components/ui/Loader";
@@ -40,14 +42,14 @@ import LeadActions from "@/components/leads/LeadActions";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import FollowupForm from "@/components/forms/FollowupForm";
 import LeadStatusBadge from "@/components/leads/LeadStatusBadge";
-import { addHistory, getHistory, getNotes } from "@/services/api/lead.api";
+import { addHistory } from "@/services/api/lead.api";
 import LeadHistoryList from "@/components/leads/LeadHistoryList";
 
 const LeadDetailsScreen = () => {
-  console.log("Debugging start in Lead Details page ---->");
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { fetchLeadById, removeLead } = useLeadStore();
+  const { fetchLeadById, removeLead, notes, fetchNotes, history, fetchHistory } = useLeadStore();
+  const { user } = useAuthStore();
 
   const [lead, setLead] = useState<Lead | null>(null);
   const [loading, setLoading] = useState(true);
@@ -57,9 +59,6 @@ const LeadDetailsScreen = () => {
   const [activeTab, setActiveTab] = useState<
     "details" | "notes" | "history" | "followup"
   >("details");
-
-  const [history, setHistory] = useState<any[]>([]);
-  const [notes, setNotes] = useState<any[]>([]);
 
   useEffect(() => {
     if (id) fetchLead();
@@ -101,32 +100,14 @@ const LeadDetailsScreen = () => {
 
   // Lead History
   useEffect(() => {
-    if (id) loadHistory();
-  }, [id]);
-  const loadHistory = async () => {
-    try {
-      const res = await getHistory(id);
-      setHistory(res.data);
-    } catch (error) {
-      console.error("Error loading history:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    if (id) fetchHistory(id);
+  }, [id, history]);
+  
 
   // Lead Notes
   useEffect(() => {
-    if (id) loadNotes();
-  }, [id]);
-
-  const loadNotes = async () => {
-    try {
-      const res = await getNotes(id);
-      setNotes(res.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    if (id) fetchNotes(id);
+  }, [id, notes]);
 
   // Communication Handler
   const handleOnCall = async (leadId: string, phone: string) => {
@@ -209,30 +190,32 @@ const LeadDetailsScreen = () => {
     },
   ];
 
+  const rightElement = (
+    <View className="flex-row gap-2">
+      <TouchableOpacity
+        onPress={() => router.push(`/(protected)/leads/edit/${id}`)}
+        className="bg-primary-color p-2 rounded-xl"
+        activeOpacity={0.8}
+      >
+        <Edit2 size={18} color="#000" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => setShowDelete(true)}
+        className="bg-red-500/15 p-2 rounded-xl"
+        activeOpacity={0.8}
+      >
+        <Trash2 size={18} color="#EF4444" />
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-gray-100">
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <AppHeader
         title="New Lead"
         showBack
-        rightElement={
-          <View className="flex-row gap-2">
-            <TouchableOpacity
-              onPress={() => router.push(`/(protected)/leads/edit/${id}`)}
-              className="bg-primary-color p-2 rounded-xl"
-              activeOpacity={0.8}
-            >
-              <Edit2 size={18} color="#000" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setShowDelete(true)}
-              className="bg-red-500/15 p-2 rounded-xl"
-              activeOpacity={0.8}
-            >
-              <Trash2 size={18} color="#EF4444" />
-            </TouchableOpacity>
-          </View>
-        }
+        rightElement={user?.role === "admin" ? rightElement : null}
       />
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -245,7 +228,7 @@ const LeadDetailsScreen = () => {
                 {lead.name}
               </Text>
               <View className="flex-row items-center gap-2 mt-1">
-                <LeadStatusBadge status={lead.status.name} />
+                <LeadStatusBadge status={lead.status.name} color={lead.status.color} />
                 <View
                   style={{
                     backgroundColor: `${getPriorityColor(lead.priority)}20`,
@@ -263,6 +246,25 @@ const LeadDetailsScreen = () => {
                     }}
                   >
                     {lead.priority}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    backgroundColor: `${getCategoryColor(lead.category)}20`,
+                    paddingHorizontal: 8,
+                    paddingVertical: 3,
+                    borderRadius: 20,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: getCategoryColor(lead.category),
+                      fontSize: 11,
+                      fontWeight: "600",
+                      textTransform: "capitalize",
+                    }}
+                  >
+                    {lead.category}
                   </Text>
                 </View>
               </View>

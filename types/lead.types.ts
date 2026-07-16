@@ -2,7 +2,8 @@ import { User } from "./user.types";
 
 interface Status {
     _id: string,
-    name: string
+    name: string,
+    color: string,
 }
 
 export interface Lead {

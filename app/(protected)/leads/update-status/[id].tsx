@@ -10,13 +10,14 @@ import Button from "@/components/ui/Button";
 import Select from "@/components/ui/Select";
 import AppHeader from "@/components/ui/Header";
 import { updateStatus } from "@/services/api/lead.api";
+import { showSuccess, showError } from "@/utils/toast";
 
 const UpdateStatus = () => {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const { fetchLeadById } = useLeadStore();
   const router = useRouter();
+  const { fetchLeadById } = useLeadStore();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  
   const { statuses, loadStatuses } = useLeadStatusStore();
-
   const [newStatus, setNewStatus] = useState("");
 
   useEffect(() => {
@@ -29,10 +30,10 @@ const UpdateStatus = () => {
   const fetchLead = async () => {
     try {
       const lead = await fetchLeadById(id);
-      console.log("Lead", lead);
-      setNewStatus(lead.status);
-    } catch (error) {
+      setNewStatus(lead?.status._id);
+    } catch (error: any) {
       console.error(error);
+      showError(error.message);
     }
   };
 
@@ -40,11 +41,12 @@ const UpdateStatus = () => {
     try {
       const success = await updateStatus(id, newStatus);
       if (success) {
-        console.log("Status updated successfully");
+        showSuccess("Status updated successfully");
         router.push("/(protected)/(tabs)/leads");
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error updating status:", error);
+      showError(error.message || "Error updating status");
     }
   };
 
@@ -55,7 +57,7 @@ const UpdateStatus = () => {
 
       <View className="flex px-4 py-3">
         <Select
-          label="Assign To"
+          label="Update Status"
           value={newStatus}
           options={statuses.map((s) => ({
             value: s._id,
@@ -63,6 +65,7 @@ const UpdateStatus = () => {
             color: s.color,
           }))}
           onValueChange={(v) => setNewStatus(v)}
+          placeholder="Select status"
         />
 
         <Button label="Update Status" onPress={() => handleUpdateStatus()} />
