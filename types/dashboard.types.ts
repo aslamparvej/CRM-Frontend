@@ -8,6 +8,14 @@ export interface DashboardProps {
   onNavigate: (path: string) => void;
 }
 
+export interface StatusBreakdown {
+  statusId: string;
+  name: string;
+  color: string;
+  order: number;
+  isClosed: boolean;
+  count: number;
+}
 
 export interface DashboardStats {
   totalLeads: number;
@@ -19,6 +27,9 @@ export interface DashboardStats {
   monthlyRevenue?: number;
   subAdminCount?:  number;
   executiveCount?: number;
+  totalFollowups?: number;
+  todayFollowups?: number;
+  statusBreakdown: StatusBreakdown[],
 }
 
 export interface ChartData {

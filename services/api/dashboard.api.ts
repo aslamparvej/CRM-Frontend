@@ -3,6 +3,7 @@ import API from "./axios";
 export const getDashboardOverview = async () => {
   try {
     const response = await API.get("/dashboard/overview");
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.log(error);

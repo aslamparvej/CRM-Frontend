@@ -1,6 +1,14 @@
 import React from "react";
 import { useRouter } from "expo-router";
-import { CheckCircle2, Clock } from "lucide-react-native";
+import {
+  CheckCircle2,
+  Clock,
+  Phone,
+  Car,
+  Mail,
+  MessageSquare,
+  MessageCircle,
+} from "lucide-react-native";
 import { View, Text, TouchableOpacity } from "react-native";
 
 import { Followup } from "@/types/followup.types";
@@ -12,18 +20,18 @@ interface TodayFollowupsProps {
 }
 
 const FOLLOWUP_STATUS_COLOR: Record<Followup["status"], string> = {
-    pending: "#F59E0B",
-    completed: "#10B981",
-    missed: "#EF4444",
-    rescheduled: ""
+  pending: "#F59E0B",
+  completed: "#10B981",
+  missed: "#EF4444",
+  rescheduled: "",
 };
 
-const FOLLOWUP_TYPE_ICONS: Record<Followup['type'], string> = {
-  call: '📞',
-  whatsapp: '💬',
-  email: '📧',
-  visit: '📅',
-  sms: '',
+const FOLLOWUP_TYPE_ICONS: Record<Followup["type"], React.ReactNode> = {
+  call: <Phone size={16} />,
+  whatsapp: <MessageCircle size={16} />,
+  email: <Mail size={16} />,
+  visit: <Car size={16} />,
+  sms: <MessageSquare size={16} />,
 };
 
 const TodayFollowups: React.FC<TodayFollowupsProps> = ({
@@ -31,9 +39,6 @@ const TodayFollowups: React.FC<TodayFollowupsProps> = ({
   onComplete,
 }) => {
   const router = useRouter();
-
-  console.log(followups);
-
   if (!followups.length) {
     return (
       <View className="bg-gray-50 rounded-2xl p-6 border border-gray-300 items-center">
@@ -44,9 +49,14 @@ const TodayFollowups: React.FC<TodayFollowupsProps> = ({
   return (
     <View className="gap-3">
       {followups.slice(0, 5).map((followup) => {
+        // const isOverdue =
+        //   followup.status === "pending" &&
+        //   new Date(`${followup.scheduledAt}T${followup.scheduledAt}`) <
+        //     new Date();
+
         const isOverdue =
-          followup.status === "pending" &&
-          new Date(`${followup.scheduledAt}T${followup.scheduledAt}`) < new Date();
+          ["pending", "rescheduled"].includes(followup.status) &&
+          new Date(followup.scheduledAt) < new Date();
         const statusColor = isOverdue
           ? "#EF4444"
           : FOLLOWUP_STATUS_COLOR[followup.status];

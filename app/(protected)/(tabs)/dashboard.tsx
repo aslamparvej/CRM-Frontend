@@ -5,7 +5,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAuthStore } from "@/store/auth.store";
 import { useDashboardStore } from "@/store/dashboard.store";
-import { getDashboardOverview, getTodayLeads } from "@/services/api/dashboard.api";
+import {
+  getDashboardOverview,
+  getTodayLeads,
+} from "@/services/api/dashboard.api";
 
 import Avatar from "@/components/ui/Avatar";
 import Loader from "@/components/ui/Loader";
@@ -38,11 +41,11 @@ export default function DashboardScreen() {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     loadTodayLeads();
   }, []);
 
-  const loadTodayLeads = async ()=> {
+  const loadTodayLeads = async () => {
     try {
       setLoading(true);
       const res = await getTodayLeads();
@@ -53,7 +56,7 @@ export default function DashboardScreen() {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const getGreeting = () => {
     const h = new Date().getHours();
@@ -72,13 +75,20 @@ export default function DashboardScreen() {
         : ExecutiveDashboard;
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-100" >
+    <SafeAreaView className="flex-1 bg-gray-100">
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
       <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-300 bg-white">
         <View>
           <Text className="text-gray-600 text-sm">{getGreeting()},</Text>
-          <Text className="text-gray-800 text-xl font-black">{user?.name}</Text>
+          <View className="flex flex-row items-center gap-2">
+            <Text className="text-gray-800 text-xl font-black">
+              {user?.name}
+            </Text>
+            <Text className="text-gray-600 text-sm">
+              ({user?.role})
+            </Text>
+          </View>
         </View>
         <Avatar name={user?.name} size={42} />
       </View>
@@ -88,7 +98,6 @@ export default function DashboardScreen() {
           <Loader text="Loading Dashboard" />
         ) : (
           <DashboardComponent
-          
             stats={stats}
             todayLeads={todayLeads}
             todayFollowups={todayFollowups}

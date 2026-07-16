@@ -1,12 +1,19 @@
 import React from "react";
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import { Target, Users, CheckCircle2, Clock, LucideUserSquare2 } from "lucide-react-native";
+import {
+  Target,
+  Users,
+  CheckCircle2,
+  Clock,
+  LucideUserSquare2,
+} from "lucide-react-native";
 
 import { DashboardProps } from "@/types/dashboard.types";
 
 import StatsCard from "./StatsCard";
 import TodayLeads from "./TodayLeads";
 import TodayFollowups from "./TodayFollowups";
+import StatusBreakdownChart from "./StatusBreakdownChart";
 
 const AdminDashboard: React.FC<DashboardProps> = ({
   stats,
@@ -55,7 +62,7 @@ const AdminDashboard: React.FC<DashboardProps> = ({
           title="Sub Admin"
           value={stats?.subAdminCount || 0}
           change={0}
-          icon={<LucideUserSquare2  size={20} color="#8B5CF6" />}
+          icon={<LucideUserSquare2 size={20} color="#8B5CF6" />}
           color="#8B5CF6"
           bgColor="rgba(139,92,246,0.15)"
           onPress={() => onNavigate("/(protected)/(tabs)/users")}
@@ -71,6 +78,9 @@ const AdminDashboard: React.FC<DashboardProps> = ({
         />
       </View>
 
+      {/* Status Breakdown Pie Chart */}
+      <StatusBreakdownChart statusBreakDown={stats?.statusBreakdown} />
+
       <View className="mb-4 flex-row items-center justify-between">
         <Text className="text-gray-600 text-base font-bold">
           Today&apos;s Leads
@@ -81,9 +91,7 @@ const AdminDashboard: React.FC<DashboardProps> = ({
           <Text className="text-indigo-400 text-sm font-medium">View all</Text>
         </TouchableOpacity>
       </View>
-
       <TodayLeads leads={todayLeads} />
-
 
       <View className="mb-4 flex-row items-center justify-between mt-8">
         <Text className="text-gray-600 text-base font-bold">
