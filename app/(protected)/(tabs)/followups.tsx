@@ -19,7 +19,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import FollowupCard from "@/components/followups/FollowupCard";
 import { showError, showSuccess } from "@/utils/toast";
 
-type FilterType = "all" | "pending" | "completed" | "missed";
+type FilterType = "all" | "pending" | "completed" | "rescheduled";
 
 export default function FollowupsPage() {
   const router = useRouter();
@@ -51,8 +51,8 @@ export default function FollowupsPage() {
     try {
       const response = await completeFollowup(id);
       console.log(response);
-      if(response.success){
-        updateFollowup(id, { status: 'completed' });
+      if (response.success) {
+        updateFollowup(id, { status: "completed" });
         showSuccess(response.message);
       }
     } catch (error: any) {
@@ -80,22 +80,22 @@ export default function FollowupsPage() {
       ),
     },
     {
+      key: "rescheduled",
+      label: "Rescheduled",
+      icon: (
+        <AlertCircle
+          size={13}
+          color={activeFilter === "rescheduled" ? "#EF4444" : "#000"}
+        />
+      ),
+    },
+    {
       key: "completed",
       label: "Completed",
       icon: (
         <CheckCircle2
           size={13}
           color={activeFilter === "completed" ? "#10B981" : "#000"}
-        />
-      ),
-    },
-    {
-      key: "missed",
-      label: "Missed",
-      icon: (
-        <AlertCircle
-          size={13}
-          color={activeFilter === "missed" ? "#EF4444" : "#000"}
         />
       ),
     },

@@ -15,12 +15,12 @@ import { BottomSheetModal } from "@gorhom/bottom-sheet";
 
 import { useActivityStore } from "@/store/activity.store";
 
-
 import AppHeader from "@/components/ui/Header";
 import EmptyState from "@/components/ui/EmptyState";
 import PeriodTabs from "@/components/activity/PeriodTabs";
 import ActivityCard from "@/components/activity/ActivityCard";
 import FilterBottomSheet from "@/components/activity/FilterBottomSheet";
+import Loader from "@/components/ui/Loader";
 
 const ActivityScreen = () => {
   const {
@@ -38,7 +38,16 @@ const ActivityScreen = () => {
   useEffect(() => {
     if (!id) return;
     fetchActivities(id, true);
-  }, [id, filters.period, filters.search, filters.module, filters.action, filters.from, filters.to, fetchActivities]);
+  }, [
+    id,
+    filters.period,
+    filters.search,
+    filters.module,
+    filters.action,
+    filters.from,
+    filters.to,
+    fetchActivities,
+  ]);
 
   const handleRefresh = () => {
     if (!id) return;
@@ -74,30 +83,36 @@ const ActivityScreen = () => {
         <View>
           <PeriodTabs />
         </View>
-        <FlatList
-          data={activities}
-          keyExtractor={(item) => item._id}
-          showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => <ActivityCard activity={item} />}
-          contentContainerStyle={{
-            paddingHorizontal: 16,
-            paddingTop: 16,
-            paddingBottom: 100,
-            flexGrow: activities.length === 0 ? 1 : undefined,
-          }}
-          ListEmptyComponent={<EmptyState title="No Activities." />}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.4}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          windowSize={10}
-          removeClippedSubviews
-        />
+        {loading ? (
+          <Loader fullScreen text="Loading activities." />
+        ) : (
+          <FlatList
+            data={activities}
+            keyExtractor={(item) => item._id}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item }) => <ActivityCard activity={item} />}
+            contentContainerStyle={{
+              paddingHorizontal: 16,
+              paddingTop: 16,
+              paddingBottom: 100,
+              flexGrow: activities.length === 0 ? 1 : undefined,
+            }}
+            ListEmptyComponent={<EmptyState title="No Activities." />}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+              />
+            }
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.4}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={10}
+            removeClippedSubviews
+          />
+        )}
       </View>
-
       <FilterBottomSheet ref={bottomSheetRef} />
     </SafeAreaView>
   );

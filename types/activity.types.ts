@@ -6,8 +6,9 @@ export interface Activity {
     email: string;
     role: string;
   };
-  module: "Lead" | "FollowUp" | "User" | "Note" | "Notification" | "Auth";
+  module: "Lead" | "FollowUp" | "User" | "Note" | "Notification" | "Auth" | "Communication";
   action: string;
+  leadId?: string;
   targetId?: string;
   targetName?: string;
   description: string;

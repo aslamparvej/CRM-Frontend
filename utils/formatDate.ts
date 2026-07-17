@@ -15,7 +15,7 @@ export const formatDate = (
     return d.toLocaleDateString();
   }
   if (format === "time")
-    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true, });
   if (format === "long")
     return d.toLocaleDateString("en-US", {
       weekday: "long",

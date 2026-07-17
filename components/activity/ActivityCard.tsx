@@ -1,6 +1,14 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { Smartphone, Apple, Globe, Circle } from "lucide-react-native";
+import { useRouter } from "expo-router";
+import { View, Text, TouchableOpacity } from "react-native";
+import {
+  Smartphone,
+  Apple,
+  Globe,
+  Circle,
+  Clock,
+  Calendar,
+} from "lucide-react-native";
 
 import { formatDate } from "@/utils/formatDate";
 import { Activity } from "@/types/activity.types";
@@ -18,6 +26,22 @@ interface ActivityCardProps {
 
 const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
   const color = getActivityColor(activity);
+  const router = useRouter();
+
+  const handleOnPress = () => {
+    if (activity.module === "Lead" || activity.module === "Communication") {
+      router.push(`/(protected)/leads/details/${activity.targetId}`);
+    } else if (activity.module === "Note") {
+      router.push(`/(protected)/leads/details/${activity.metadata.leadId}`);
+    } else if(activity.module === "FollowUp"){
+      router.push(`/(protected)/followup/details/${activity.targetId}`);
+    }
+    else if (activity.module === "User") {
+      router.push(`/(protected)/users/details/${activity.targetId}`);
+    } else {
+      return;
+    }
+  };
   return (
     <View className="flex-row">
       {/* Timeline */}
@@ -33,7 +57,11 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
         <View className="flex-1 w-[2px] bg-slate-200 mt-2" />
       </View>
 
-      <View className="flex-1 mb-5 rounded-2xl bg-white border border-slate-200 p-4">
+      <TouchableOpacity
+        onPress={() => handleOnPress()}
+        activeOpacity={0.7}
+        className="flex-1 mb-5 rounded-2xl bg-white border border-slate-200 p-4"
+      >
         {/* Header */}
         <View className="flex-row items-start justify-between">
           <View className="flex-1 pr-3">
@@ -92,11 +120,20 @@ const ActivityCard: React.FC<ActivityCardProps> = ({ activity }) => {
             </Text>
           </View>
 
-          <Text className="text-xs text-slate-400">
-            {formatDate(activity.createdAt, "relative")}
-          </Text>
+          <View className="flex-row items-center gap-1">
+            <Calendar size={14} color="#94a3b8" />
+            <Text className="text-xs text-slate-400">
+              {formatDate(activity.createdAt, "short")}
+            </Text>
+          </View>
+          <View className="flex-row items-center gap-1">
+            <Clock size={14} color="#94a3b8" />
+            <Text className="text-xs text-slate-400">
+              {formatDate(activity.createdAt, "time")}
+            </Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

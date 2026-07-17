@@ -29,8 +29,8 @@ const TabsLayout = () => {
           paddingBottom: insets.bottom,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: "600",
+          fontSize: 10,
+          fontWeight: "400",
         },
         tabBarHideOnKeyboard: true
       }}
