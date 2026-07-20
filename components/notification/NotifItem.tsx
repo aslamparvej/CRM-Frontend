@@ -7,13 +7,22 @@ import {
   AlertCircle,
   UserPlus,
   Trash2,
+  BellRing,
+  AlertTriangle,
 } from "lucide-react-native";
 
 import { COLORS } from "@/constants/colors";
 import { formatDate } from "@/utils/formatDate";
 import { Notification } from "@/types/notification.types";
 
-type NotifType = "lead-assigned" | "followup" | "message" | "system" | "user";
+type NotifType =
+  | "lead-assigned"
+  | "followup"
+  | "followup-reminder"
+  | "followup-overdue"
+  | "message"
+  | "system"
+  | "user";
 const typeConfig: Record<NotifType, { icon: any; color: string; bg: string }> =
   {
     "lead-assigned": {
@@ -22,6 +31,17 @@ const typeConfig: Record<NotifType, { icon: any; color: string; bg: string }> =
       bg: "bg-indigo-500/20",
     },
     followup: { icon: Clock, color: "#F59E0B", bg: "bg-amber-500/20" },
+    "followup-reminder": {
+      icon: BellRing, // or Bell
+      color: "#06B6D4",
+      bg: "bg-cyan-500/20",
+    },
+
+    "followup-overdue": {
+      icon: AlertTriangle,
+      color: "#EF4444",
+      bg: "bg-red-500/20",
+    },
     message: { icon: MessageCircle, color: "#10B981", bg: "bg-emerald-500/20" },
     system: { icon: AlertCircle, color: "#3B82F6", bg: "bg-blue-500/20" },
     user: { icon: UserPlus, color: "#EC4899", bg: "bg-pink-500/20" },
